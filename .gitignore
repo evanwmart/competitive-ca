@@ -1,0 +1,14 @@
+# Compiled objects and binaries
+*.o
+torus
+torus_dyn
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Generated output
+results/
+smoke_test.log
