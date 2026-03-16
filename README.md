@@ -170,7 +170,7 @@ torus/
 │   └── analyse.py         single-run stats plot
 ├── research-log/          dated entries documenting all measurements and findings
 ├── results/               sweep CSVs and PNGs (timestamped, not tracked in git)
-├── notes/                 pre-experiment hypotheses and implementation notes
+├── notes/                 pre-experiment hypotheses, implementation notes, and future directions
 └── REPLICATION.md         exact commands to reproduce all key results
 ```
 
