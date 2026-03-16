@@ -34,13 +34,24 @@ static void tty_progress(FILE *tty, uint64_t frame, uint64_t step,
 // ── output ────────────────────────────────────────────────────────────────────
 
 static void write_frame(FILE *fp, const DGraph *g, size_t w, size_t h,
-                        uint8_t *buf) {
+                        uint8_t *buf, bool degree_viz, size_t degree_scale) {
     size_t n = w * h;
     for (size_t i = 0; i < n; i++) {
-        uint32_t c = g->nodes[i].color;
-        buf[i*3+0] = color_r(c);
-        buf[i*3+1] = color_g(c);
-        buf[i*3+2] = color_b(c);
+        if (degree_viz) {
+            // heatmap: blue (low degree) → green → red (high degree)
+            double t = (degree_scale > 0)
+                ? (double)g->nodes[i].n_edges / (double)degree_scale
+                : 0.0;
+            if (t > 1.0) t = 1.0;
+            buf[i*3+0] = (uint8_t)(255 * t);
+            buf[i*3+1] = (uint8_t)(255 * (t < 0.5 ? 2*t : 2*(1-t)));
+            buf[i*3+2] = (uint8_t)(255 * (1.0 - t));
+        } else {
+            uint32_t c = g->nodes[i].color;
+            buf[i*3+0] = color_r(c);
+            buf[i*3+1] = color_g(c);
+            buf[i*3+2] = color_b(c);
+        }
     }
     fwrite(buf, 1, n * 3, fp);
 }
@@ -77,6 +88,7 @@ static void run(DGraph *g, size_t w, size_t h,
                 size_t steps_per_frame, const Rules *rules,
                 uint32_t topo_rate,
                 bool headless, size_t stats_interval, uint64_t max_frames,
+                bool degree_viz, size_t degree_scale,
                 FILE *out, FILE *tty) {
     size_t n = g->n;
 
@@ -102,7 +114,7 @@ static void run(DGraph *g, size_t w, size_t h,
         }
 
         if (!headless) {
-            write_frame(out, g, w, h, frame_buf);
+            write_frame(out, g, w, h, frame_buf, degree_viz, degree_scale);
             if (ferror(out)) break;
         }
 
@@ -152,6 +164,7 @@ static void usage(const char *argv0) {
         "                         0 = frozen topology (fixed-graph mode)\n"
         "  --max-degree N         cap on degree growth via edge formation (0=unlimited)\n"
         "  --ordered-init         start fully ordered (all nodes type R, all edges aligned)\n"
+        "  --degree-viz           color by degree: blue=low, green=mid, red=high (scale=max-degree)\n"
         "  --frames N             stop after N frames\n",
         argv0);
 }
@@ -171,6 +184,7 @@ int main(int argc, char **argv) {
     uint32_t     max_degree      = 0;   // 0 = unlimited
     uint64_t     max_frames      = 0;
     bool         ordered_init    = false;
+    bool         degree_viz      = false;
 
     int argi = 1;
     for (; argi < argc; argi++) {
@@ -191,6 +205,8 @@ int main(int argc, char **argv) {
             max_frames = (uint64_t)strtoull(argv[++argi], NULL, 10);
         } else if (strcmp(argv[argi], "--ordered-init") == 0) {
             ordered_init = true;
+        } else if (strcmp(argv[argi], "--degree-viz") == 0) {
+            degree_viz = true;
         } else {
             break;
         }
@@ -262,8 +278,11 @@ int main(int argc, char **argv) {
         if (tty) fprintf(tty, "%s", info);
     }
 
+    size_t degree_scale = (max_degree > 0) ? max_degree : 8;
     run(&g, width, height, steps_per_frame, &rules, topo_rate,
-        headless, stats_interval, max_frames, stdout, tty);
+        headless, stats_interval, max_frames,
+        degree_viz, degree_scale,
+        stdout, tty);
 
     if (tty) fclose(tty);
     dgraph_free(&g);
