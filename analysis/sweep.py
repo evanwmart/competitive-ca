@@ -81,7 +81,7 @@ def run_one(binary: Path, mutation_rate: int | float, reinforce_min: int, seed: 
 
     try:
         result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=600
+            cmd, capture_output=True, text=True, timeout=7200
         )
     except subprocess.TimeoutExpired:
         print(f"  TIMEOUT  mr={mutation_rate} rm={reinforce_min} seed={seed}",
