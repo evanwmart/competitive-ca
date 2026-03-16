@@ -45,7 +45,7 @@ echo "--- Size dependence: L=64 ---"
 $PY $SWEEP $BASE --mutation-probs $PROBS --width 64 --height 64
 
 echo "--- Size dependence: L=256 ---"
-$PY $SWEEP $BASE --mutation-probs $PROBS --width 256 --height 256
+$PY $SWEEP $BASE --mutation-probs $PROBS --width 256 --height 256 --frames 10000
 
 echo ""
 echo "============================================"
