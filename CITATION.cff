@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the accompanying paper."
+title: "competitive-ca: a three-colour competitive cellular automaton on fixed and adaptive networks"
+abstract: >-
+  Reference implementation and analysis pipeline for a three-colour
+  competitive cellular automaton studied on a fixed 4-regular toroidal
+  lattice and on an adaptive co-evolving network. Includes the C
+  simulators, Python analysis scripts, per-figure backing CSVs, and the
+  LaTeX sources for the manuscript.
+authors:
+  - family-names: "Martin"
+    given-names: "Evan W."
+    email: "evanwmart@gmail.com"
+    # orcid: "https://orcid.org/0000-0000-0000-0000"  # add before tagging release
+license: MIT
+repository-code: "https://github.com/evanwmart/competitive-ca"
+type: software
+keywords:
+  - cellular-automaton
+  - adaptive-network
+  - phase-transition
+  - finite-size-scaling
+  - statistical-mechanics
+  - coevolution
+
+preferred-citation:
+  type: article
+  title: "Sharp finite-size coexistence in an adaptive multi-species competitive network: scaling evidence for a continuous transition"
+  authors:
+    - family-names: "Martin"
+      given-names: "Evan W."
+      email: "evanwmart@gmail.com"
+      # orcid: "https://orcid.org/0000-0000-0000-0000"
+  year: 2026
+  journal: "Physica A"
+  # volume:
+  # number:
+  # start:
+  # end:
+  # doi:
+  notes: "Under review."

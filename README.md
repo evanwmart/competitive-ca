@@ -1,30 +1,36 @@
-# torus
+# competitive-ca
 
-A three-color competitive exclusion cellular automaton, studied in two configurations:
+A three-colour competitive cellular automaton, studied in two configurations:
 
 - **`torus`** — fixed 4-regular toroidal lattice
-- **`torus_dyn`** — same rules, edges co-evolve with state (adaptive network)
+- **`torus_dyn`** — same local rules, edges co-evolve with node states (adaptive network)
 
-The two configurations produce qualitatively different phase transitions, establishing
-that topological freedom changes the fundamental nature of ordering in this class of
-system.
+The two configurations produce qualitatively different phase transitions: smooth on
+the fixed lattice, sharp coexistence-like on the adaptive network. The accompanying
+manuscript (in `paper/`) presents finite-size scaling evidence, mechanism controls,
+and a degree-headroom sweep that locates the topological ingredient driving the
+sharpening.
 
 ---
 
-## Key results
+## Paper
 
-| system | transition type | critical mutation prob | order parameter |
-|--------|-----------------|------------------------|-----------------|
-| fixed lattice | second-order (continuous) | ≈ 0.20 | boundary density |
-| adaptive network | **first-order (discontinuous)** | ≈ 0.35 | boundary density + degree |
+**Sharp finite-size coexistence in an adaptive multi-species competitive network: scaling evidence for a continuous transition.**
+Evan W. Martin, *under review at Physica A* (2026).
 
-On the fixed lattice, the transition is in the voter model / 2D percolation universality
-class (domain size exponent τ → 2.0). On the adaptive network, topological co-evolution
-produces spontaneous homophily — compatible nodes preferentially connect, incompatible
-nodes disconnect — driving a first-order transition with simultaneous discontinuities in
-state order and network topology.
+- Manuscript: [`paper/main.pdf`](paper/main.pdf)
+- Supplementary material: [`paper/supplement.pdf`](paper/supplement.pdf)
+- LaTeX sources: [`paper/main.tex`](paper/main.tex), [`paper/supplement.tex`](paper/supplement.tex)
+- Backing data for figures: [`paper/cache/`](paper/cache/) (per-seed CSVs)
 
-Full results and analysis are in `research-log/`.
+### Headline findings
+
+| Aspect | Result |
+|---|---|
+| Fixed-lattice transition | Smooth |
+| Adaptive-network transition | Sharp coexistence-like jump (ρ_b: 0.17 → 0.48 across μ ∈ [0.35, 0.355]) |
+| Finite-size scaling (L = 64, 128, 256, 384) | Binder cumulant dip shallows monotonically; bimodal window narrows; consistent with a sharp continuous transition over the tested range, with weakly-first-order alternative beyond L = 384 not excluded |
+| Mechanism (kmax sweep) | Degree headroom implicated as a contributing topological ingredient; bounded by an rmin/k effective-fraction confound at kmax = 4 |
 
 ---
 
@@ -38,27 +44,26 @@ make torus        # fixed lattice only
 make torus_dyn    # adaptive network only
 ```
 
-**Live view** (optional): the demo commands below pipe raw video to
-[ffplay](https://ffmpeg.org/ffplay.html) (part of ffmpeg). Not needed for
-headless runs or analysis.
-
 ---
 
 ## Quick demo
 
-**Fixed lattice — live view (requires ffplay):**
+The simulators stream raw RGB24 frames to stdout for live viewing with
+[ffplay](https://ffmpeg.org/ffplay.html). Use `--headless` for analysis runs.
+
+**Fixed lattice — live view:**
 ```bash
 ./torus | ffplay -f rawvideo -pixel_format rgb24 -video_size 128x128 \
     -framerate 60 -vf scale=512:512:flags=neighbor -i pipe:0
 ```
 
-**Adaptive network — ordered phase (mutation prob 0.20):**
+**Adaptive network, ordered phase (μ = 0.20):**
 ```bash
-./torus_dyn --mutation-rate 5 | ffplay -f rawvideo -pixel_format rgb24 \
+./torus_dyn --mutation-prob 0.20 | ffplay -f rawvideo -pixel_format rgb24 \
     -video_size 128x128 -framerate 60 -vf scale=512:512:flags=neighbor -i pipe:0
 ```
 
-**Adaptive network — disordered phase (mutation prob 0.40):**
+**Adaptive network, disordered phase (μ = 0.40):**
 ```bash
 ./torus_dyn --mutation-prob 0.40 | ffplay -f rawvideo -pixel_format rgb24 \
     -video_size 128x128 -framerate 60 -vf scale=512:512:flags=neighbor -i pipe:0
@@ -66,116 +71,144 @@ headless runs or analysis.
 
 ---
 
-## The model
+## Model
 
-Each node holds an RGB color. The dominant channel (R, G, or B) defines the node's
-"type". At each step a random node is selected and competes with each of its neighbors:
+Each node holds a three-channel RGB colour. The dominant channel defines the node's
+type. At each step a random node is selected and competes with each of its neighbours:
 
-- **Compatible pair** (same dominant channel): both nodes reinforce — their shared
-  dominant channel increases. The edge is labeled with that channel.
-- **Incompatible pair**: the node with the smaller dominance margin loses. Its dominant
-  channel decreases and the winner's channel increases in the loser. The edge is labeled
-  null (boundary).
-- **Self-reinforcement**: if `reinforce_min` or more of a node's edges agree on the same
-  channel, the node boosts that channel.
-- **Mutation**: each selected node resets to a random color with probability
-  `1/mutation_rate` (or `--mutation-prob p`).
+- **Compatible pair** (same dominant type): both nodes reinforce — shared dominant
+  channel increases.
+- **Incompatible pair**: the node with the smaller dominance margin loses; its
+  dominant channel decreases and the winner's channel increases in the loser.
+- **Self-reinforcement**: if at least `reinforce_min` of a node's edges agree on the
+  same channel, the node boosts that channel.
+- **Mutation**: each selected node resets to a uniformly random colour with
+  probability `mutation-prob`.
 
-In `torus_dyn`, after each competition:
-- Aligned pair → attempt to form a new global random edge (prob `1/topo_rate`)
-- Conflicting pair → attempt to sever the edge (prob `1/topo_rate`, min degree 2)
-
-Edge formation is capped at `max_degree` (default unlimited; use `--max-degree 8` for
-long sweeps to prevent runaway hub formation in the ordered phase).
+In `torus_dyn`, after each pairwise interaction:
+- Aligned pair → attempt to form a new globally random compatible edge
+  (prob `1/topo_rate`, both endpoints below `max_degree`)
+- Conflicting pair → attempt to sever the edge (prob `1/topo_rate`,
+  min degree 2)
 
 ---
 
-## `torus` usage
+## CLI
 
+### `./torus` (fixed lattice)
 ```
 ./torus [options] [width] [height] [steps_per_frame] [seed] [reinforce_min]
-
-Options:
   --headless             skip video output
   --stats-interval N     emit CSV stats to stderr every N frames
   --mutation-rate N      1-in-N mutation chance (default 2000)
   --frames N             stop after N frames
 ```
 
-Writes raw RGB24 frames to stdout. Must be piped.
-
----
-
-## `torus_dyn` usage
-
+### `./torus_dyn` (adaptive network)
 ```
 ./torus_dyn [options] [width] [height] [steps_per_frame] [seed] [reinforce_min]
-
-Options:
   --headless             skip video output
   --stats-interval N     emit CSV stats to stderr every N frames
   --mutation-rate N      1-in-N mutation chance (default 2000)
-  --mutation-prob P      float mutation probability, overrides --mutation-rate
-  --topo-rate N          1-in-N topology change per competition (default n_nodes)
-                         0 = frozen topology (fixed-graph mode)
-  --max-degree N         cap degree growth via edge formation (0=unlimited)
+  --mutation-prob P      float mutation probability (overrides --mutation-rate)
+  --topo-rate N          1-in-N topology change per competition (default n_nodes;
+                         0 = frozen topology)
+  --max-degree N         cap degree via edge formation (0 = unlimited)
+  --local-formation      restrict edge formation to distance-2 neighbours
+                         (control experiment)
   --frames N             stop after N frames
 ```
 
-Stats CSV includes degree columns: `mean_degree, degree_variance, max_degree`.
+`torus_dyn` stats CSV includes `mean_degree, degree_variance, max_degree` columns
+in addition to the fixed-lattice fields.
 
 ---
 
-## Analysis
+## Reproducing the paper's analyses
 
-Requires Python 3.10+ with `numpy`, `matplotlib`, `scipy` (see `requirements.txt`).
+Requires Python 3.10+ with `numpy`, `matplotlib`, `scipy` (see [`requirements.txt`](requirements.txt)).
 
 ```bash
 python3 -m venv venv && venv/bin/pip install -r requirements.txt
 ```
 
-**Phase diagram sweep:**
-```bash
-# Fixed lattice
-venv/bin/python3 analysis/sweep.py --frames 5000 --seeds 3
+For an exact replication of the environment that produced the paper's PDFs, use
+the pinned lock file:
 
-# Adaptive network (fractional mutation probe)
-venv/bin/python3 analysis/sweep.py --binary torus_dyn \
-    --mutation-probs 0.33 0.35 0.37 0.40 0.50 \
-    --reinforce-mins 4 --seeds 8 --frames 30000 --max-degree 8
+```bash
+venv/bin/pip install -r requirements-frozen.txt
 ```
 
-**Domain size distribution (τ measurement):**
-```bash
-venv/bin/python3 analysis/histogram.py --frames 5000 --seeds 4
-```
+The `analysis/` directory contains the scripts that produce every figure in the paper:
 
-See `REPLICATION.md` for the exact commands that reproduce all results.
+| Script | Produces |
+|---|---|
+| `analysis/sweep.py` | Parameter sweeps; the workhorse runner |
+| `analysis/figures.py` | Most main-text figures from cached per-seed data |
+| `analysis/binder.py`, `binder_bootstrap.py` | Binder cumulant + bootstrap CIs (Fig. 6) |
+| `analysis/data_collapse_binder.py` | Two-parameter Binder collapse (Supplement S1) |
+| `analysis/histograms_coex.py`, `histograms_L384.py` | ρ_b distribution histograms (Fig. 4, Supplement S2) |
+| `analysis/convergence_plot.py` | Equilibration diagnostics (Supplement S3) |
+| `analysis/merge_seeds.py` | Consolidates per-seed CSVs across chunked runs |
+
+See [`scripts/run_tier2.sh`](scripts/run_tier2.sh),
+[`scripts/run_revision.sh`](scripts/run_revision.sh), and the other runners
+in [`scripts/`](scripts/) for the exact compute scripts used to generate the
+data behind each figure. All scripts cd to the repo root before running, so
+invoke them as `bash scripts/<name>.sh` from anywhere.
+
+---
+
+## Compute
+
+All runs reported in the paper were produced on a single workstation:
+AMD Ryzen 9 9950X (16 cores / 32 threads), 32 GB DDR5, 1.8 TB NVMe (btrfs),
+openSUSE Tumbleweed. The simulator is single-threaded C; parallelism comes
+from the Python sweep runner farming `(μ, seed)` jobs across processes via
+`--workers N`. No GPU and no MPI are used. Worker counts in the run scripts
+target 24–28 concurrent jobs; reduce `--workers` to fit smaller hardware.
+
+| Experiment | Script | Workers | Wall time |
+|---|---|---|---|
+| Full replication of all main-text figures | `scripts/run_all_replication.sh` | 24 | ~12–16 h |
+| L=128, L=256 fine Binder sweep + k_max=4 control | `scripts/run_experiments_2.sh` | 28 | ~6–8 h |
+| L=384 fine Binder sweep (32 seeds, baseline) | `scripts/run_experiments_3.sh` | 8 | ~12 h (cap) |
+| L=384 additional 32 seeds, chunked | `scripts/run_tier2.sh 384 N` | 24 | ~7.3 h per chunk × 32 |
+| L=256 additional 32 seeds, chunked | `scripts/run_tier2.sh 256 N` | 24 | ~5 h per chunk × 8 |
+| Local-formation control + L=128/256 Binder | `scripts/run_revision.sh` | 24 | ~8–10 h |
+
+The principal compute investment is the L=384 Binder sweep with 64 seeds at
+200 000 frames — roughly 250 core-hours. Smaller systems (L ≤ 128) and the
+fixed-lattice phase diagram complete in under an hour. Disk usage is dominated
+by `snapshots/` (raw per-seed node and edge CSVs) which can exceed 100 GB
+during the full replication; pass `--no-snapshots` or `--save-seeds` to the
+sweep runner to keep only aggregated CSVs.
 
 ---
 
 ## Directory structure
 
 ```
-torus/
-├── sim.c / sim.h          fixed-lattice CA core + RNG + color helpers
-├── stats.c / stats.h      fixed-lattice statistics (boundary density, domains, histogram)
-├── main.c                 fixed-lattice CLI
-├── dgraph.c / dgraph.h    adaptive-network CA (adjacency lists, topology co-evolution)
-├── main_dyn.c             adaptive-network CLI
+competitive-ca/
+├── sim.c / sim.h           fixed-lattice CA core (RNG, colour helpers)
+├── stats.c / stats.h       fixed-lattice statistics
+├── main.c                  fixed-lattice CLI
+├── dgraph.c / dgraph.h     adaptive-network CA (adjacency lists, topology coevolution)
+├── main_dyn.c              adaptive-network CLI
 ├── Makefile
-├── analysis/
-│   ├── sweep.py           parameter sweep → phase diagram plots
-│   ├── histogram.py       domain size distribution → τ measurement
-│   └── analyse.py         single-run stats plot
-├── research-log/          dated entries documenting all measurements and findings
-├── results/               sweep CSVs and PNGs (timestamped, not tracked in git)
-├── notes/                 pre-experiment hypotheses, implementation notes, and future directions
-└── REPLICATION.md         exact commands to reproduce all key results
+├── analysis/               Python figure-generation and analysis scripts
+├── scripts/                bash runners for the compute pipelines
+├── paper/                  manuscript, supplement, figures, cache CSVs
+├── notes/                  pre-experiment hypotheses, implementation notes
+├── research-log/           dated entries documenting measurements and findings
+├── results/                sweep CSVs and PNGs (gitignored, timestamped)
+├── snapshots/              raw simulation snapshots (gitignored, large)
+├── videos/                 demo MP4s (gitignored)
+└── logs/                   runtime logs (gitignored)
 ```
 
 ---
 
 ## License
 
-MIT © 2026 Evan William Martin. See [LICENSE](LICENSE).
+MIT © 2026 Evan W. Martin. See [LICENSE](LICENSE).

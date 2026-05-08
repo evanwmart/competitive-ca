@@ -1,14 +1,44 @@
-# Compiled objects and binaries
+# ─── Compiled binaries and objects ─────────────────────────────────────────
 *.o
 torus
 torus_dyn
 
-# Python
+# ─── Python ────────────────────────────────────────────────────────────────
 venv/
 __pycache__/
 *.pyc
 *.pyo
 
-# Generated output
+# ─── Simulation outputs ────────────────────────────────────────────────────
+# Bulky raw outputs (snapshots/ is ~449 GB, never commit).
+# Per-paper data files are selectively tracked under data/ if needed.
 results/
-smoke_test.log
+snapshots/
+logs/
+videos/
+*.log
+
+# ─── LaTeX build artifacts ─────────────────────────────────────────────────
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.run.xml
+*.spl
+*.synctex.gz
+*.toc
+texput.*
+
+# ─── Backups ───────────────────────────────────────────────────────────────
+*.bak
+
+# ─── Editor / agent state ──────────────────────────────────────────────────
+.claude/
+
+# ─── Personal / strategy notes (not for public repo) ───────────────────────
+# Author-internal: revision tracking, venue strategy, cover letter,
+# suggested-reviewer list. Anything in private/ is never tracked.
+private/
