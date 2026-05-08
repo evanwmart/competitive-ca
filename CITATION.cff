@@ -11,7 +11,7 @@ authors:
   - family-names: "Martin"
     given-names: "Evan W."
     email: "evanwmart@gmail.com"
-    # orcid: "https://orcid.org/0000-0000-0000-0000"  # add before tagging release
+    orcid: "https://orcid.org/0009-0009-1765-2535"
 license: MIT
 repository-code: "https://github.com/evanwmart/competitive-ca"
 type: software
@@ -30,7 +30,7 @@ preferred-citation:
     - family-names: "Martin"
       given-names: "Evan W."
       email: "evanwmart@gmail.com"
-      # orcid: "https://orcid.org/0000-0000-0000-0000"
+      orcid: "https://orcid.org/0009-0009-1765-2535"
   year: 2026
   journal: "Physica A"
   # volume:
