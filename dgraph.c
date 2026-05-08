@@ -136,8 +136,8 @@ static void maybe_sever(DGraph *g, size_t ai, size_t bi, uint32_t topo_rate) {
 // Try to form a new global random edge from ai with probability 1/topo_rate.
 // Tries up to 8 random candidates to find a non-neighbor.
 // Honours max_degree cap on both endpoints (0 = unlimited).
-static void maybe_form(DGraph *g, size_t ai, size_t bi,
-                       uint32_t topo_rate, uint32_t max_degree) {
+static void maybe_form_global(DGraph *g, size_t ai, size_t bi,
+                              uint32_t topo_rate, uint32_t max_degree) {
     if (max_degree > 0 && g->nodes[ai].n_edges >= max_degree) return;
     if (rng_range(topo_rate) != 0) return;
     size_t n = g->n;
@@ -149,6 +149,38 @@ static void maybe_form(DGraph *g, size_t ai, size_t bi,
         edge_add(g, ai, k, (uint8_t)REL_NULL);
         return;
     }
+}
+
+// Try to form a new LOCAL edge from ai: pick a random neighbour-of-neighbour.
+// Restricts formation to distance-2 in the current graph.
+static void maybe_form_local(DGraph *g, size_t ai, size_t bi,
+                             uint32_t topo_rate, uint32_t max_degree) {
+    if (max_degree > 0 && g->nodes[ai].n_edges >= max_degree) return;
+    if (rng_range(topo_rate) != 0) return;
+    DNode *node_a = &g->nodes[ai];
+    for (int tries = 0; tries < 8; tries++) {
+        // Pick a random neighbour of ai
+        if (node_a->n_edges == 0) return;
+        size_t mid = node_a->edges[rng_range(node_a->n_edges)].neighbor;
+        // Pick a random neighbour of that neighbour
+        DNode *node_m = &g->nodes[mid];
+        if (node_m->n_edges == 0) continue;
+        size_t k = node_m->edges[rng_range(node_m->n_edges)].neighbor;
+        if (k == ai || k == bi) continue;
+        if (edge_find(node_a, k)) continue;
+        if (max_degree > 0 && g->nodes[k].n_edges >= max_degree) continue;
+        edge_add(g, ai, k, (uint8_t)REL_NULL);
+        return;
+    }
+}
+
+// Dispatch: form edge globally or locally depending on rules.
+static void maybe_form(DGraph *g, size_t ai, size_t bi,
+                       uint32_t topo_rate, const Rules *rules) {
+    if (rules->local_formation)
+        maybe_form_local(g, ai, bi, topo_rate, rules->max_degree);
+    else
+        maybe_form_global(g, ai, bi, topo_rate, rules->max_degree);
 }
 
 // ── reinforce ─────────────────────────────────────────────────────────────────
@@ -197,7 +229,7 @@ void dgraph_process_node(DGraph *g, size_t idx, const Rules *rules,
 
         if (topo_rate > 0) {
             if (aligned)
-                maybe_form(g, idx, nb, topo_rate, rules->max_degree);
+                maybe_form(g, idx, nb, topo_rate, rules);
             else
                 maybe_sever(g, idx, nb, topo_rate);
         }

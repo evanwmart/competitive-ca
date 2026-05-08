@@ -9,6 +9,7 @@
 #include <time.h>
 #include <inttypes.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 // Progress is written to /dev/tty so it reaches the terminal even when
 // stderr is redirected to a file.  tty_open() returns NULL silently if
@@ -68,12 +69,61 @@ static void print_stats(uint64_t frame, uint64_t step, const Stats *s) {
     fprintf(stderr, "\n");
 }
 
+// ── snapshot dump ─────────────────────────────────────────────────────────────
+
+static const char *rel_name_fix(uint8_t r) {
+    switch (r & 0x3) {
+        case REL_RED:   return "R";
+        case REL_GREEN: return "G";
+        case REL_BLUE:  return "B";
+        default:        return "N";
+    }
+}
+
+static void write_snapshot_fix(const Torus *t, const char *dir, uint64_t frame) {
+    size_t w = t->width, h = t->height;
+    char path[512];
+
+    // nodes
+    snprintf(path, sizeof(path), "%s/snapshot_%06"PRIu64"_nodes.csv", dir, frame);
+    FILE *f = fopen(path, "w");
+    if (!f) return;
+    fprintf(f, "node,x,y,r,g,b,dominant,degree\n");
+    for (size_t i = 0; i < w * h; i++) {
+        uint32_t c = t->nodes[i].color;
+        fprintf(f, "%zu,%zu,%zu,%u,%u,%u,%s,4\n",
+                i, i % w, i / w,
+                color_r(c), color_g(c), color_b(c),
+                rel_name_fix((uint8_t)node_dominant(c)));
+    }
+    fclose(f);
+
+    // edges (right and down from each node, giving all edges exactly once)
+    snprintf(path, sizeof(path), "%s/snapshot_%06"PRIu64"_edges.csv", dir, frame);
+    f = fopen(path, "w");
+    if (!f) return;
+    fprintf(f, "src,dst,rel\n");
+    for (size_t y = 0; y < h; y++) {
+        for (size_t x = 0; x < w; x++) {
+            size_t idx   = y * w + x;
+            size_t right = y * w + (x + 1) % w;
+            size_t down  = ((y + 1) % h) * w + x;
+            fprintf(f, "%zu,%zu,%s\n", idx, right,
+                    rel_name_fix(t->hedges[idx].value));
+            fprintf(f, "%zu,%zu,%s\n", idx, down,
+                    rel_name_fix(t->vedges[idx].value));
+        }
+    }
+    fclose(f);
+}
+
 // ── run loop ──────────────────────────────────────────────────────────────────
 
 #define PROGRESS_INTERVAL 5   // update tty every N frames
 
 static void run(Torus *t, size_t steps_per_frame, const Rules *rules,
                 bool headless, size_t stats_interval, uint64_t max_frames,
+                const char *snapshot_dir,
                 FILE *out, FILE *tty) {
     size_t n = t->width * t->height;
 
@@ -111,6 +161,8 @@ static void run(Torus *t, size_t steps_per_frame, const Rules *rules,
             compute_stats(t, &st_buf, scratch);
             print_stats(frame, step, &st_buf);
             st = &st_buf;
+            if (snapshot_dir)
+                write_snapshot_fix(t, snapshot_dir, frame);
         }
 
         if (tty && frame % PROGRESS_INTERVAL == 0) {
@@ -147,6 +199,7 @@ static void usage(const char *argv0) {
         "  --headless             skip video output (for stats-only runs)\n"
         "  --stats-interval N     emit CSV stats to stderr every N frames (default 0 = off)\n"
         "  --mutation-rate N      1-in-N mutation chance per node (default 2000, 0 = off)\n"
+        "  --snapshot-dir DIR     dump node/edge CSVs at each stats interval\n"
         "  --frames N             stop after N frames (default: run forever)\n"
         "\n"
         "  live:   %s | ffplay -f rawvideo -pixel_format rgb24 -video_size WxH -framerate 60 -i pipe:0\n"
@@ -165,6 +218,7 @@ int main(int argc, char **argv) {
     size_t       stats_interval = 0;
     uint32_t     mutation_rate  = 2000;
     uint64_t     max_frames     = 0;   // 0 = infinite
+    const char  *snapshot_dir   = NULL;
 
     // parse options first
     int argi = 1;
@@ -177,6 +231,8 @@ int main(int argc, char **argv) {
             mutation_rate = (uint32_t)strtoul(argv[++argi], NULL, 10);
         } else if (strcmp(argv[argi], "--frames") == 0 && argi + 1 < argc) {
             max_frames = (uint64_t)strtoull(argv[++argi], NULL, 10);
+        } else if (strcmp(argv[argi], "--snapshot-dir") == 0 && argi + 1 < argc) {
+            snapshot_dir = argv[++argi];
         } else {
             break;  // positional args start here
         }
@@ -231,7 +287,10 @@ int main(int argc, char **argv) {
         if (tty) fprintf(tty, "%s", info);
     }
 
-    run(&t, steps_per_frame, &rules, headless, stats_interval, max_frames, stdout, tty);
+    if (snapshot_dir) mkdir(snapshot_dir, 0755);
+
+    run(&t, steps_per_frame, &rules, headless, stats_interval, max_frames,
+        snapshot_dir, stdout, tty);
     if (tty) fclose(tty);
 
     torus_free(&t);

@@ -9,6 +9,7 @@
 #include <time.h>
 #include <inttypes.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 static FILE *tty_open(void) { return fopen("/dev/tty", "w"); }
 
@@ -80,6 +81,53 @@ static void print_stats(uint64_t frame, uint64_t step, const DStats *s) {
         s->mean_degree, s->degree_variance, s->max_degree);
 }
 
+// ── snapshot dump ─────────────────────────────────────────────────────────────
+
+static const char *rel_name(uint8_t r) {
+    switch (r & 0x3) {
+        case REL_RED:   return "R";
+        case REL_GREEN: return "G";
+        case REL_BLUE:  return "B";
+        default:        return "N";
+    }
+}
+
+static void write_snapshot(const DGraph *g, size_t w,
+                           const char *dir, uint64_t frame) {
+    char path[512];
+
+    // nodes
+    snprintf(path, sizeof(path), "%s/snapshot_%06"PRIu64"_nodes.csv", dir, frame);
+    FILE *f = fopen(path, "w");
+    if (!f) return;
+    fprintf(f, "node,x,y,r,g,b,dominant,degree\n");
+    for (size_t i = 0; i < g->n; i++) {
+        uint32_t c = g->nodes[i].color;
+        fprintf(f, "%zu,%zu,%zu,%u,%u,%u,%s,%zu\n",
+                i, i % w, i / w,
+                color_r(c), color_g(c), color_b(c),
+                rel_name((uint8_t)node_dominant(c)),
+                g->nodes[i].n_edges);
+    }
+    fclose(f);
+
+    // edges (each undirected edge written once, src < dst)
+    snprintf(path, sizeof(path), "%s/snapshot_%06"PRIu64"_edges.csv", dir, frame);
+    f = fopen(path, "w");
+    if (!f) return;
+    fprintf(f, "src,dst,rel\n");
+    for (size_t i = 0; i < g->n; i++) {
+        const DNode *node = &g->nodes[i];
+        for (size_t e = 0; e < node->n_edges; e++) {
+            if (node->edges[e].neighbor > i)
+                fprintf(f, "%zu,%zu,%s\n",
+                        i, node->edges[e].neighbor,
+                        rel_name(node->edges[e].rel));
+        }
+    }
+    fclose(f);
+}
+
 // ── run loop ──────────────────────────────────────────────────────────────────
 
 #define PROGRESS_INTERVAL 5
@@ -89,6 +137,7 @@ static void run(DGraph *g, size_t w, size_t h,
                 uint32_t topo_rate,
                 bool headless, size_t stats_interval, uint64_t max_frames,
                 bool degree_viz, size_t degree_scale,
+                const char *snapshot_dir,
                 FILE *out, FILE *tty) {
     size_t n = g->n;
 
@@ -124,6 +173,8 @@ static void run(DGraph *g, size_t w, size_t h,
             dgraph_compute_stats(g, &st_buf, scratch);
             print_stats(frame, step, &st_buf);
             st = &st_buf;
+            if (snapshot_dir)
+                write_snapshot(g, w, snapshot_dir, frame);
         }
 
         if (tty && frame % PROGRESS_INTERVAL == 0) {
@@ -163,8 +214,10 @@ static void usage(const char *argv0) {
         "  --topo-rate N          1-in-N topology change per competition (default n_nodes)\n"
         "                         0 = frozen topology (fixed-graph mode)\n"
         "  --max-degree N         cap on degree growth via edge formation (0=unlimited)\n"
+        "  --local-formation      restrict new edges to neighbours-of-neighbours (distance 2)\n"
         "  --ordered-init         start fully ordered (all nodes type R, all edges aligned)\n"
         "  --degree-viz           color by degree: blue=low, green=mid, red=high (scale=max-degree)\n"
+        "  --snapshot-dir DIR     dump node/edge CSVs at each stats interval\n"
         "  --frames N             stop after N frames\n",
         argv0);
 }
@@ -182,9 +235,11 @@ int main(int argc, char **argv) {
     uint32_t     topo_rate       = 0;   // 0 = use n_nodes (set after parsing)
     bool         topo_rate_set   = false;
     uint32_t     max_degree      = 0;   // 0 = unlimited
+    bool         local_formation = false;
     uint64_t     max_frames      = 0;
     bool         ordered_init    = false;
     bool         degree_viz      = false;
+    const char  *snapshot_dir    = NULL;
 
     int argi = 1;
     for (; argi < argc; argi++) {
@@ -203,10 +258,14 @@ int main(int argc, char **argv) {
             max_degree = (uint32_t)strtoul(argv[++argi], NULL, 10);
         } else if (strcmp(argv[argi], "--frames") == 0 && argi+1 < argc) {
             max_frames = (uint64_t)strtoull(argv[++argi], NULL, 10);
+        } else if (strcmp(argv[argi], "--local-formation") == 0) {
+            local_formation = true;
         } else if (strcmp(argv[argi], "--ordered-init") == 0) {
             ordered_init = true;
         } else if (strcmp(argv[argi], "--degree-viz") == 0) {
             degree_viz = true;
+        } else if (strcmp(argv[argi], "--snapshot-dir") == 0 && argi+1 < argc) {
+            snapshot_dir = argv[++argi];
         } else {
             break;
         }
@@ -258,6 +317,7 @@ int main(int argc, char **argv) {
         .mutation_rate   = (mutation_prob > 0.0) ? 0 : mutation_rate,
         .mutation_thresh = prob_to_thresh(mutation_prob),
         .max_degree      = max_degree,
+        .local_formation = local_formation ? 1 : 0,
     };
 
     FILE *tty = tty_open();
@@ -278,10 +338,13 @@ int main(int argc, char **argv) {
         if (tty) fprintf(tty, "%s", info);
     }
 
+    if (snapshot_dir) mkdir(snapshot_dir, 0755);
+
     size_t degree_scale = (max_degree > 0) ? max_degree : 8;
     run(&g, width, height, steps_per_frame, &rules, topo_rate,
         headless, stats_interval, max_frames,
         degree_viz, degree_scale,
+        snapshot_dir,
         stdout, tty);
 
     if (tty) fclose(tty);

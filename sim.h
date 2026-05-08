@@ -64,6 +64,7 @@ typedef struct {
     uint32_t mutation_rate;   // 0=off, N=1-in-N per node selection
     uint32_t mutation_thresh; // alternative: fire when (rng>>32) < thresh (0=use rate)
     uint32_t max_degree;      // dgraph only: cap on edge formation (0=unlimited)
+    uint8_t  local_formation; // dgraph only: 1=restrict new edges to distance-2 (neighbour-of-neighbour)
 } Rules;
 
 // Convert float probability [0,1] to mutation_thresh.
