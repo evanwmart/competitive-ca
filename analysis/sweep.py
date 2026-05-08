@@ -21,6 +21,8 @@ from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
@@ -54,7 +56,9 @@ def run_one(binary: Path, mutation_rate: int | float, reinforce_min: int, seed: 
             topo_rate: int | None = None,
             max_degree: int | None = None,
             ordered_init: bool = False,
-            stats_interval: int = 50) -> dict | None:
+            local_formation: bool = False,
+            stats_interval: int = 50,
+            snapshot_dir: str | None = None) -> dict | None:
     """
     Run one simulation instance and return summary statistics over the second
     half of the run (to discard the transient).
@@ -77,11 +81,20 @@ def run_one(binary: Path, mutation_rate: int | float, reinforce_min: int, seed: 
         cmd += ["--max-degree", str(max_degree)]
     if ordered_init:
         cmd += ["--ordered-init"]
+    if local_formation:
+        cmd += ["--local-formation"]
+    if snapshot_dir:
+        # Per-seed subdirectory: snapshot_dir/mr{rate}_rm{rm}_s{seed}[_ordered]
+        tag = f"{mutation_rate}" if is_prob else str(mutation_rate)
+        init_tag = "_ordered" if ordered_init else ""
+        seed_dir = f"{snapshot_dir}/mr{tag}_rm{reinforce_min}_s{seed}{init_tag}"
+        Path(seed_dir).mkdir(parents=True, exist_ok=True)
+        cmd += ["--snapshot-dir", seed_dir]
     cmd += [str(width), str(height), "0", str(seed), str(reinforce_min)]
 
     try:
         result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=7200
+            cmd, capture_output=True, text=True, timeout=43200
         )
     except subprocess.TimeoutExpired:
         print(f"  TIMEOUT  mr={mutation_rate} rm={reinforce_min} seed={seed}",
@@ -135,9 +148,9 @@ def run_one(binary: Path, mutation_rate: int | float, reinforce_min: int, seed: 
 
 
 def run_point(args):
-    binary, mr, rm, seed, frames, width, height, topo_rate, max_degree, ordered_init = args
+    binary, mr, rm, seed, frames, width, height, topo_rate, max_degree, ordered_init, local_formation, snapshot_dir, stats_interval = args
     return run_one(binary, mr, rm, seed, frames, width, height, topo_rate, max_degree,
-                   ordered_init)
+                   ordered_init, local_formation, stats_interval=stats_interval, snapshot_dir=snapshot_dir)
 
 
 # ── aggregation ───────────────────────────────────────────────────────────────
@@ -259,6 +272,8 @@ def main():
                         help="frames per run (default 5000)")
     parser.add_argument("--seeds", type=int, default=3,
                         help="seeds per parameter point (default 3)")
+    parser.add_argument("--seed-offset", type=int, default=0,
+                        help="start seed numbering from this value (default 0)")
     parser.add_argument("--width",  type=int, default=128)
     parser.add_argument("--height", type=int, default=128)
     parser.add_argument("--workers", type=int, default=4,
@@ -271,6 +286,14 @@ def main():
                         help="float mutation probabilities (overrides --mutation-rates)")
     parser.add_argument("--ordered-init", action="store_true", default=False,
                         help="start all nodes ordered (torus_dyn only)")
+    parser.add_argument("--local-formation", action="store_true", default=False,
+                        help="restrict edge formation to neighbours-of-neighbours (distance 2)")
+    parser.add_argument("--stats-interval", type=int, default=50,
+                        help="emit stats (and snapshots) every N frames (default 50)")
+    parser.add_argument("--snapshot-dir", default=None,
+                        help="dump node/edge CSV snapshots at each stats interval")
+    parser.add_argument("--save-seeds", action="store_true", default=False,
+                        help="save per-seed results CSV (for Binder cumulant etc.)")
     parser.add_argument("-o", "--output",
                         help="save plot to file instead of displaying")
     args = parser.parse_args()
@@ -282,11 +305,12 @@ def main():
 
     jobs = [
         (binary, mr, rm, seed, args.frames, args.width, args.height,
-         args.topo_rate, args.max_degree, args.ordered_init)
+         args.topo_rate, args.max_degree, args.ordered_init, args.local_formation,
+         args.snapshot_dir, args.stats_interval)
         for mr, rm, seed in itertools.product(
             mutation_values,
             args.reinforce_mins,
-            range(args.seeds),
+            range(args.seed_offset, args.seed_offset + args.seeds),
         )
     ]
     total = len(jobs)
@@ -343,7 +367,27 @@ def main():
     plot_path = args.output or str(results_dir / (stem + ".png"))
 
     save_csv(agg, str(csv_path))
-    plot(agg, plot_path, params_label)
+
+    # Save per-seed CSV BEFORE plotting so plotting failures do not
+    # destroy hours of compute. (Learned the hard way 2026-04-12.)
+    if args.save_seeds:
+        import csv as csv_mod
+        seeds_path = results_dir / (stem + "_seeds.csv")
+        sorted_results = sorted(results, key=lambda r: (r["mutation_prob"], r["seed"]))
+        fields = ["mutation_rate", "mutation_prob", "reinforce_min", "seed",
+                  "bd_mean", "bd_std", "bd_var"]
+        if "deg_mean" in sorted_results[0]:
+            fields += ["deg_mean", "deg_max"]
+        with open(seeds_path, "w", newline="") as f:
+            w = csv_mod.DictWriter(f, fieldnames=fields, extrasaction="ignore")
+            w.writeheader()
+            w.writerows(sorted_results)
+        print(f"saved: {seeds_path} ({len(sorted_results)} seeds)", file=sys.stderr)
+
+    try:
+        plot(agg, plot_path, params_label)
+    except Exception as e:
+        print(f"warning: plot failed ({type(e).__name__}: {e}) — CSVs were saved", file=sys.stderr)
 
 
 if __name__ == "__main__":

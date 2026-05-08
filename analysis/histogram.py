@@ -18,6 +18,7 @@ import subprocess
 import sys
 import datetime
 from pathlib import Path
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -46,7 +47,7 @@ def run_torus(mutation_rate: int, reinforce_min: int, seed: int,
         str(width), str(height), "0", str(seed), str(reinforce_min),
     ]
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=7200)
     except subprocess.TimeoutExpired:
         print(f"  TIMEOUT mr={mutation_rate}", file=sys.stderr)
         return None
@@ -71,14 +72,32 @@ def run_torus(mutation_rate: int, reinforce_min: int, seed: int,
     return arr[half:]           # second half only
 
 
+def _run_seed(args):
+    """Worker function for parallel seed execution."""
+    mutation_rate, reinforce_min, seed, frames, width, height = args
+    h = run_torus(mutation_rate, reinforce_min, seed, frames, width, height)
+    if h is not None:
+        return h.mean(axis=0)  # average over frames for this seed
+    return None
+
+
 def collect(mutation_rate: int, reinforce_min: int, seeds: int,
-            frames: int, width: int, height: int) -> np.ndarray | None:
+            frames: int, width: int, height: int,
+            workers: int = 1) -> np.ndarray | None:
     """Average histogram across seeds; returns mean counts (HIST_BINS,)."""
+    jobs = [(mutation_rate, reinforce_min, s, frames, width, height)
+            for s in range(seeds)]
     accum = []
-    for seed in range(seeds):
-        h = run_torus(mutation_rate, reinforce_min, seed, frames, width, height)
-        if h is not None:
-            accum.append(h.mean(axis=0))   # average over frames for this seed
+    if workers > 1:
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            for result in pool.map(_run_seed, jobs):
+                if result is not None:
+                    accum.append(result)
+    else:
+        for j in jobs:
+            r = _run_seed(j)
+            if r is not None:
+                accum.append(r)
     if not accum:
         return None
     return np.array(accum).mean(axis=0)   # average over seeds
@@ -210,6 +229,8 @@ def main():
                         help="reinforce_min value (default 4, sharpest signal)")
     parser.add_argument("--mutation-rates", type=int, nargs="+",
                         default=DEFAULT_RATES)
+    parser.add_argument("--workers", type=int, default=4,
+                        help="parallel workers for seed execution (default 4)")
     parser.add_argument("-o", "--output", help="save plot to file")
     args = parser.parse_args()
 
@@ -224,7 +245,8 @@ def main():
         print(f"  [{i+1}/{len(args.mutation_rates)}]  mr={mr} ...", end="  ",
               file=sys.stderr, flush=True)
         h = collect(mr, args.reinforce_min, args.seeds,
-                    args.frames, args.width, args.height)
+                    args.frames, args.width, args.height,
+                    workers=args.workers)
         if h is not None:
             tau, r2, _ = fit_powerlaw(h, n_nodes=n_nodes)
             print(f"τ={tau:.3f}  R²={r2:.4f}", file=sys.stderr)
