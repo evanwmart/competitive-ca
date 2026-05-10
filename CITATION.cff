@@ -1,12 +1,14 @@
 cff-version: 1.2.0
 message: "If you use this code or data, please cite the accompanying paper."
-title: "competitive-ca: a three-color competitive cellular automaton on fixed and adaptive networks"
+title: "Code and data for: Adaptive rewiring produces sharp finite-size bimodality in a conviction-weighted competitive network"
 abstract: >-
-  Reference implementation and analysis pipeline for a three-color
-  competitive cellular automaton studied on a fixed 4-regular toroidal
-  lattice and on an adaptive coevolving network. Includes the C
-  simulators, Python analysis scripts, per-figure backing CSVs, and the
-  LaTeX sources for the manuscript.
+  Reference implementation, analysis pipeline, and per-figure backing
+  data for the manuscript "Adaptive rewiring produces sharp finite-size
+  bimodality in a conviction-weighted competitive network." Includes
+  the C simulators (fixed-lattice torus and adaptive-network torus_dyn),
+  Python analysis and figure-generation scripts, run scripts for the
+  compute pipelines, per-figure backing CSVs, and the LaTeX manuscript
+  sources.
 authors:
   - family-names: "Martin"
     given-names: "Evan W."
