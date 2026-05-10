@@ -201,8 +201,6 @@ competitive-ca/
 ├── analysis/               Python figure-generation and analysis scripts
 ├── scripts/                bash runners for the compute pipelines
 ├── paper/                  manuscript, supplement, figures, cache CSVs
-├── notes/                  pre-experiment hypotheses, implementation notes
-├── research-log/           dated entries documenting measurements and findings
 ├── results/                sweep CSVs and PNGs (gitignored, timestamped)
 ├── snapshots/              raw simulation snapshots (gitignored, large)
 ├── videos/                 demo MP4s (gitignored)
