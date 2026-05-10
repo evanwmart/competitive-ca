@@ -1,5 +1,8 @@
 # competitive-ca
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20114194.svg)](https://doi.org/10.5281/zenodo.20114194)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A three-color competitive cellular automaton, studied in two configurations:
 
 - **`torus`** — fixed 4-regular toroidal lattice
@@ -22,7 +25,8 @@ Evan W. Martin, *under review at Physica A* (2026).
 - Manuscript: [`paper/main.pdf`](paper/main.pdf)
 - Supplementary material: [`paper/supplement.pdf`](paper/supplement.pdf)
 - LaTeX sources: [`paper/main.tex`](paper/main.tex), [`paper/supplement.tex`](paper/supplement.tex)
-- Backing data for figures: [`paper/cache/`](paper/cache/) (per-seed CSVs)
+- Backing data for figures: [`paper/cache/`](paper/cache/) (per-figure aggregate CSVs)
+- Archived snapshot: [Zenodo, DOI 10.5281/zenodo.20114194](https://doi.org/10.5281/zenodo.20114194)
 
 ### Headline findings
 
@@ -32,6 +36,35 @@ Evan W. Martin, *under review at Physica A* (2026).
 | Adaptive-network finite-size transition | Sharp coexistence-like jump (ρ_b: 0.17 → 0.48 across μ ∈ [0.35, 0.355]) |
 | Finite-size Binder analysis (L = 64, 128, 256, 384) | U_min moves from 0.26 to 0.52 between L = 128 and L = 256 (CIs non-overlapping), a substantial fraction of the way to the single-peak value 2/3; bimodal window narrows; disfavors conventional first-order scaling over the tested sizes, with a weakly first-order alternative beyond L = 384 not excluded |
 | Mechanism (kmax sweep) | Consistent with a degree-headroom requirement; partly confounded by reinforcement-firing and formation-rate effects |
+
+---
+
+## Citation
+
+If you use this code or data, please cite the manuscript and the archived
+software snapshot:
+
+```bibtex
+@article{martin2026competitive,
+  author  = {Martin, Evan W.},
+  title   = {Adaptive rewiring produces sharp finite-size bimodality
+             in a conviction-weighted competitive network},
+  journal = {Physica A},
+  year    = {2026},
+  note    = {Under review},
+}
+
+@software{martin2026competitive_software,
+  author = {Martin, Evan W.},
+  title  = {{competitive-ca}: a three-color competitive cellular automaton
+            on fixed and adaptive networks},
+  year   = {2026},
+  doi    = {10.5281/zenodo.20114194},
+  url    = {https://doi.org/10.5281/zenodo.20114194},
+}
+```
+
+A machine-readable [`CITATION.cff`](CITATION.cff) is also included.
 
 ---
 
@@ -139,6 +172,26 @@ the pinned lock file:
 
 ```bash
 venv/bin/pip install -r requirements-frozen.txt
+```
+
+### From clone to figures
+
+```bash
+# 1. Build the C simulators (no external dependencies, C11 compiler required)
+make all
+
+# 2. Set up the Python analysis environment
+python3 -m venv venv && venv/bin/pip install -r requirements-frozen.txt
+
+# 3a. Recompile the manuscript and supplement from the cached sources (no compute)
+cd paper
+pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
+pdflatex supplement.tex && pdflatex supplement.tex
+cd ..
+
+# 3b. Or regenerate every figure and table from raw simulations (heavy: ~12–16 h
+#     on a 24-core workstation; produces results/, snapshots/, logs/)
+bash scripts/run_all_replication.sh
 ```
 
 The `analysis/` directory contains the scripts that produce every figure in the paper:
