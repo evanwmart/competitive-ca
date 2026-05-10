@@ -1,21 +1,22 @@
 # competitive-ca
 
-A three-colour competitive cellular automaton, studied in two configurations:
+A three-color competitive cellular automaton, studied in two configurations:
 
 - **`torus`** — fixed 4-regular toroidal lattice
-- **`torus_dyn`** — same local rules, edges co-evolve with node states (adaptive network)
+- **`torus_dyn`** — same local rules, edges coevolve with node states (adaptive network)
 
-The two configurations produce qualitatively different phase transitions: smooth on
-the fixed lattice, sharp coexistence-like on the adaptive network. The accompanying
-manuscript (in `paper/`) presents finite-size scaling evidence, mechanism controls,
-and a degree-headroom sweep that locates the topological ingredient driving the
-sharpening.
+At the tested system size ($L = 128$), the two configurations produce qualitatively
+different finite-size behavior: a smooth crossover on the fixed lattice, a sharp
+coexistence-like jump on the adaptive network. The accompanying manuscript
+(in `paper/`) presents the finite-size Binder analysis, mechanism controls, and a
+degree-headroom sweep consistent with degree headroom as a contributing topological
+ingredient.
 
 ---
 
 ## Paper
 
-**Sharp finite-size coexistence in an adaptive multi-species competitive network: scaling evidence for a continuous transition.**
+**Adaptive rewiring produces sharp finite-size bimodality in a conviction-weighted competitive network.**
 Evan W. Martin, *under review at Physica A* (2026).
 
 - Manuscript: [`paper/main.pdf`](paper/main.pdf)
@@ -27,10 +28,10 @@ Evan W. Martin, *under review at Physica A* (2026).
 
 | Aspect | Result |
 |---|---|
-| Fixed-lattice transition | Smooth |
-| Adaptive-network transition | Sharp coexistence-like jump (ρ_b: 0.17 → 0.48 across μ ∈ [0.35, 0.355]) |
-| Finite-size scaling (L = 64, 128, 256, 384) | Binder cumulant dip shallows monotonically; bimodal window narrows; consistent with a sharp continuous transition over the tested range, with weakly-first-order alternative beyond L = 384 not excluded |
-| Mechanism (kmax sweep) | Degree headroom implicated as a contributing topological ingredient; bounded by an rmin/k effective-fraction confound at kmax = 4 |
+| Fixed-lattice baseline (L = 128) | Smooth crossover-like loss of order |
+| Adaptive-network finite-size transition | Sharp coexistence-like jump (ρ_b: 0.17 → 0.48 across μ ∈ [0.35, 0.355]) |
+| Finite-size Binder analysis (L = 64, 128, 256, 384) | U_min moves from 0.26 to 0.52 between L = 128 and L = 256 (CIs non-overlapping), a substantial fraction of the way to the single-peak value 2/3; bimodal window narrows; disfavors conventional first-order scaling over the tested sizes, with a weakly first-order alternative beyond L = 384 not excluded |
+| Mechanism (kmax sweep) | Consistent with a degree-headroom requirement; partly confounded by reinforcement-firing and formation-rate effects |
 
 ---
 
@@ -73,8 +74,8 @@ The simulators stream raw RGB24 frames to stdout for live viewing with
 
 ## Model
 
-Each node holds a three-channel RGB colour. The dominant channel defines the node's
-type. At each step a random node is selected and competes with each of its neighbours:
+Each node holds a three-channel RGB color. The dominant channel defines the node's
+type. At each step a random node is selected and competes with each of its neighbors:
 
 - **Compatible pair** (same dominant type): both nodes reinforce — shared dominant
   channel increases.
@@ -82,14 +83,15 @@ type. At each step a random node is selected and competes with each of its neigh
   dominant channel decreases and the winner's channel increases in the loser.
 - **Self-reinforcement**: if at least `reinforce_min` of a node's edges agree on the
   same channel, the node boosts that channel.
-- **Mutation**: each selected node resets to a uniformly random colour with
+- **Mutation**: each selected node resets to a uniformly random color with
   probability `mutation-prob`.
 
-In `torus_dyn`, after each pairwise interaction:
-- Aligned pair → attempt to form a new globally random compatible edge
-  (prob `1/topo_rate`, both endpoints below `max_degree`)
-- Conflicting pair → attempt to sever the edge (prob `1/topo_rate`,
-  min degree 2)
+In `torus_dyn`, after each pairwise interaction between focal node `i` and neighbor `j`:
+- Aligned pair → with prob `1/topo_rate`, `i` attempts to form a new edge to a
+  uniformly random non-neighbor (focal node and target both gated by `max_degree`).
+  The target is *not* required to be of matching type; homophilic clustering arises
+  from compatibility-triggered formation plus selective severance.
+- Conflicting pair → attempt to sever the edge (prob `1/topo_rate`, min degree 2).
 
 ---
 
@@ -114,7 +116,7 @@ In `torus_dyn`, after each pairwise interaction:
   --topo-rate N          1-in-N topology change per competition (default n_nodes;
                          0 = frozen topology)
   --max-degree N         cap degree via edge formation (0 = unlimited)
-  --local-formation      restrict edge formation to distance-2 neighbours
+  --local-formation      restrict edge formation to distance-2 neighbors
                          (control experiment)
   --frames N             stop after N frames
 ```
@@ -190,7 +192,7 @@ sweep runner to keep only aggregated CSVs.
 
 ```
 competitive-ca/
-├── sim.c / sim.h           fixed-lattice CA core (RNG, colour helpers)
+├── sim.c / sim.h           fixed-lattice CA core (RNG, color helpers)
 ├── stats.c / stats.h       fixed-lattice statistics
 ├── main.c                  fixed-lattice CLI
 ├── dgraph.c / dgraph.h     adaptive-network CA (adjacency lists, topology coevolution)

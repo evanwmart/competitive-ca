@@ -1,10 +1,10 @@
 cff-version: 1.2.0
 message: "If you use this code or data, please cite the accompanying paper."
-title: "competitive-ca: a three-colour competitive cellular automaton on fixed and adaptive networks"
+title: "competitive-ca: a three-color competitive cellular automaton on fixed and adaptive networks"
 abstract: >-
-  Reference implementation and analysis pipeline for a three-colour
+  Reference implementation and analysis pipeline for a three-color
   competitive cellular automaton studied on a fixed 4-regular toroidal
-  lattice and on an adaptive co-evolving network. Includes the C
+  lattice and on an adaptive coevolving network. Includes the C
   simulators, Python analysis scripts, per-figure backing CSVs, and the
   LaTeX sources for the manuscript.
 authors:
@@ -25,7 +25,7 @@ keywords:
 
 preferred-citation:
   type: article
-  title: "Sharp finite-size coexistence in an adaptive multi-species competitive network: scaling evidence for a continuous transition"
+  title: "Adaptive rewiring produces sharp finite-size bimodality in a conviction-weighted competitive network"
   authors:
     - family-names: "Martin"
       given-names: "Evan W."
