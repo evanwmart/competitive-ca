@@ -24,7 +24,7 @@ keywords:
   - coevolution
 
 preferred-citation:
-  type: article
+  type: unpublished
   title: "Adaptive rewiring produces sharp finite-size bimodality in a conviction-weighted competitive network"
   authors:
     - family-names: "Martin"
@@ -32,10 +32,6 @@ preferred-citation:
       email: "evanwmart@gmail.com"
       orcid: "https://orcid.org/0009-0009-1765-2535"
   year: 2026
-  journal: "Physica A"
-  # volume:
-  # number:
-  # start:
-  # end:
-  # doi:
-  notes: "Under review."
+  # journal, volume, number, start, end, and doi will be filled in
+  # once the manuscript is accepted.
+  notes: "Manuscript under review."

@@ -45,13 +45,12 @@ If you use this code or data, please cite the manuscript and the archived
 software snapshot:
 
 ```bibtex
-@article{martin2026competitive,
-  author  = {Martin, Evan W.},
-  title   = {Adaptive rewiring produces sharp finite-size bimodality
-             in a conviction-weighted competitive network},
-  journal = {Physica A},
-  year    = {2026},
-  note    = {Under review},
+@unpublished{martin2026competitive,
+  author = {Martin, Evan W.},
+  title  = {Adaptive rewiring produces sharp finite-size bimodality
+            in a conviction-weighted competitive network},
+  year   = {2026},
+  note   = {Manuscript under review},
 }
 
 @software{martin2026competitive_software,
@@ -63,6 +62,9 @@ software snapshot:
   url    = {https://doi.org/10.5281/zenodo.20114194},
 }
 ```
+
+Once accepted, replace the `@unpublished` entry with the venue-specific
+`@article` entry from the published version.
 
 A machine-readable [`CITATION.cff`](CITATION.cff) is also included.
 
