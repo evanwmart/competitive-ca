@@ -23,44 +23,45 @@
 
 \begin{frontmatter}
 
-\title{Sharp finite-size coexistence in an adaptive
-       multi-species competitive network:
-       scaling evidence for a continuous transition}
+\title{Adaptive rewiring produces sharp finite-size
+       bimodality in a conviction-weighted
+       competitive network}
 
 \author{Evan W. Martin}
-\affiliation{organization={Independent researcher}}
+\affiliation{Independent researcher}
 
 % ══════════════════════════════════════════════════════════════════════════════
 \begin{abstract}
-A three-colour competitive model is studied on a fixed
-toroidal lattice and on an adaptive network where edges
-co-evolve with node states.
-On the fixed lattice the transition is smooth.
-On the adaptive network the same local rules produce an
-unusually sharp transition: boundary density jumps from
-$\rb \approx 0.17$ to $\approx 0.48$ across
-$\mu \in [0.35, 0.355]$, distributions are bimodal at
-intermediate system sizes ($\Lsys = 128, 256$), and a
-variance spike rises four to five orders of magnitude
-above the quiet-phase background.
-Across $\Lsys = 128 \to 256 \to 384$ the Binder cumulant
-dip shallows monotonically toward $2/3$ and the bimodal
-window narrows, consistent with a sharp continuous
-transition over the tested size range;
-a weakly first-order alternative with crossover length
-exceeding $\Lsys = 384$ cannot be excluded.
-%
-A degree-cap sweep ($\kmax \in \{4, 5, 6, 8\}$) implicates
-degree headroom as a contributing topological ingredient:
-capping at $\kmax = 4$ yields smooth behaviour, while
-every $\kmax \geq 5$ yields a sharp jump whose location
-drifts toward higher~$\mu$ with increasing headroom.
-The headroom reading is partially confounded with a
-reinforcement-firing-rate effect (at $\kmax = 4$ the
-mean degree falls below the firing threshold) and, in
-the local-only control, with candidate-pool shrinkage,
-so non-local formation per se is implicated only
-indirectly.
+We study a three-species competitive model in which each node
+carries a continuous three-channel state and interactions favor
+the locally dominant species.
+The order parameter $\rb$ is the fraction of edges connecting
+nodes of different dominant species, with low $\rb$ corresponding
+to species-segregated order and high $\rb$ to a well-mixed
+disordered state.
+We ask how coupling these local dynamics to adaptive rewiring
+changes the finite-size behavior of the mutation-driven
+order--disorder transition.
+At $\Lsys = 128$, the fixed toroidal lattice shows a smooth
+crossover-like loss of order, while the adaptive network shows a
+sharp jump from $\rb \approx 0.17$ to $\approx 0.48$ across
+$\mu \in [0.35, 0.355]$ together with bimodal per-seed
+distributions.
+Finite-size Binder analysis disfavors conventional first-order
+scaling over the tested sizes: the Binder dip weakens from
+$\Lsys = 128$ to $\Lsys = 256$, the bimodal window narrows, and
+the $\Lsys = 384$ result is consistent with this trend but
+limited by equilibration.
+The data are consistent with a sharp continuous transition over
+the tested range, although a weakly first-order transition with
+crossover length beyond $\Lsys = 384$ cannot be excluded.
+Degree-cap controls indicate that degree headroom contributes
+to the sharpening, but the mechanism remains partly confounded
+by reinforcement-firing and formation-rate effects.
+Adaptive topology thus emerges as a strong finite-size
+sharpening mechanism in this conviction-weighted competitive
+model.
+The asymptotic order of the transition remains open.
 \end{abstract}
 
 \end{frontmatter}
@@ -81,11 +82,11 @@ On fixed regular lattices, these transitions are typically continuous.
 Real populations, however, do not interact on static topologies.
 Individuals form and break social, spatial, or ecological links
 in response to their own state and the states of their
-neighbours---a co-evolutionary feedback between dynamics
+neighbors---a coevolutionary feedback between dynamics
 \emph{on} the network and dynamics \emph{of} the
 network~\cite{gross2008adaptive}.
 A growing body of work shows that this feedback can qualitatively
-change collective behaviour, including the order of phase
+change collective behavior, including the order of phase
 transitions.
 Holme and Newman~\cite{holme2006nonequilibrium} and
 Vazquez et al.~\cite{vazquez2008generic} demonstrated that
@@ -98,46 +99,52 @@ networks with cyclic dominance, showing that coevolution
 of topology and strategy leads to spontaneous
 network fragmentation.
 
-Here we ask whether topological co-evolution changes the
-character of the phase transition in a \emph{conviction-weighted}
-multi-species competition model, and if so, what specific
-feature of the rewiring drives the change.
-Our system differs from prior adaptive-network studies in
-three respects:
-(i)~node states are continuous three-channel vectors
-    (not discrete opinions or strategies), giving a notion
-    of ``conviction'' that modulates interaction outcomes;
-(ii)~rewiring is globally non-local---new edges may form
-    between any two compatible nodes anywhere in the system,
-    subject to a degree cap---rather than being restricted to
-    neighbours of neighbours;
-(iii)~we compare directly against a fixed-lattice control
-    to assess the effect of topological freedom.
+Here we ask whether topological coevolution changes the order
+of the order--disorder transition in a conviction-weighted
+multi-species competition model.
+The transition we study is between a low-boundary-density,
+species-segregated phase and a high-boundary-density, well-mixed
+phase, driven by the mutation probability~$\mu$
+(the boundary density $\rb$ is the fraction of edges connecting
+nodes of different dominant species; defined precisely in
+Section~\ref{sec:model}).
+We further ask what specific feature of the rewiring drives any
+change in transition character.
+Our system differs from prior adaptive-network studies in three
+respects:
+(i)~node states are continuous three-channel vectors with a
+    \emph{dominance margin} (the difference between the largest
+    and second-largest channel) that determines who concedes in
+    pairwise conflicts---a soft, ``conviction-weighted'' analogue
+    of majority or voter dynamics; whether the continuous margin
+    is essential to the phenomenology, as opposed to a
+    discrete-state simplification, is left to future work;
+(ii)~rewiring is globally non-local---like-state interactions
+    trigger formation of an edge to a uniformly random non-neighbor
+    anywhere in the system, subject to a degree cap, rather than
+    being restricted to neighbors of neighbors;
+(iii)~we compare directly against a fixed-lattice control to
+    assess the effect of topological freedom.
 
-We find that the same local rules that produce a smooth
-transition on the fixed lattice produce an unusually
-sharp transition on the adaptive network: a jump in
-coupled order parameters, bimodal coexistence visible in
-histograms at intermediate system sizes, and a variance
-spike.
-However, the Binder cumulant dip shallows monotonically
-from $\Lsys = 128$ to $\Lsys = 384$, consistent with a
-sharp but continuous transition over the tested size range.
-A degree-cap sweep ($\kmax \in \{4, 5, 6, 8\}$)
-implicates degree headroom as a contributing topological
-ingredient, with the jump location drifting monotonically
-toward higher~$\mu$ as headroom grows.
-The headroom reading is partially confounded with a
-reinforcement-firing-rate effect at $\kmax = 4$ and, in
-the local-only control, with candidate-pool shrinkage;
-non-local formation per se is implicated only indirectly.
+We find that adaptive rewiring strongly sharpens the finite-size
+transition relative to the fixed lattice: $\rb$ jumps and per-seed
+distributions become bimodal at intermediate system sizes.
+Binder-cumulant trends, however, weaken with $\Lsys$ rather than
+strengthening, consistent with a sharp continuous transition over
+the tested range and disfavoring a conventional first-order
+interpretation; a weakly first-order alternative with crossover
+length beyond $\Lsys = 384$ is not excluded.
+Control experiments indicate that some degree headroom is
+necessary for the sharp jump, though the effect is not cleanly
+separable from reinforcement-firing and formation-rate confounds.
 
-The remainder of the paper is organised as follows.
+The remainder of the paper is organized as follows.
 Section~\ref{sec:model} defines the model.
 Sections~\ref{sec:fixed} and~\ref{sec:adaptive} present results
 on the fixed lattice and adaptive network, respectively,
 including control experiments.
-Section~\ref{sec:fss} gives finite-size scaling evidence.
+Section~\ref{sec:fss} presents finite-size behavior near the
+sharp transition, including the Binder cumulant test.
 Section~\ref{sec:discussion} discusses the mechanism
 and connections to related models.
 
@@ -145,40 +152,56 @@ and connections to related models.
 \section{Model}
 \label{sec:model}
 
-The model is an interacting particle system on an adaptive
-network: nodes carry continuous $[0,1]^3$ state vectors,
-updates are asynchronous and random-sequential, and in the
-adaptive variant the topology co-evolves with the dynamics.
-We use ``cellular automaton'' loosely, following the convention
-in lattice competition literature.
+The model is a random-sequential interacting particle system
+with continuous internal states on an adaptive graph: nodes
+carry continuous $[0,1]^3$ state vectors, updates are
+\emph{asynchronous and random-sequential} (one randomly selected
+node updates at a time, with each update seeing the current
+configuration), and in the adaptive variant the topology
+coevolves with the dynamics.
+We refer to the dynamics as a ``cellular automaton'' loosely,
+following the convention in the lattice competition literature;
+in the strict sense the updates are not synchronous.
 
 \subsection{Fixed lattice}
 
 The substrate is an $\Lsys \times \Lsys$ two-dimensional torus:
 a square grid with periodic boundary conditions in both directions,
-giving every node exactly four neighbours.
-This 4-regular toroidal lattice serves as the fixed-topology control.
+giving every node exactly four neighbors.
+This 4-regular toroidal lattice serves as the fixed-topology
+control: periodic boundaries remove edge effects, so any
+difference between fixed-lattice and adaptive-network behavior
+is attributable to topological coevolution rather than to
+boundary geometry.
+The 4-regular degree also matches the initial mean degree of the
+adaptive network at $t = 0$, so divergence in late-time behavior
+reflects rewiring dynamics rather than initial-condition mismatch.
 
 \subsection{Node state and competition}
 
-Each node~$i$ carries a three-channel colour value
+Each node~$i$ carries a three-channel color value
 $\bm{c}_i = (r_i, g_i, b_i) \in [0,1]^3$.
 The three channels represent three competing species;
 the \emph{dominant type} of node~$i$ is the channel
 with the largest value.
-Ties are broken by a fixed cyclic order $R > G > B > R$.
-(This symmetry-breaking is arbitrary; the three species are
-otherwise identical, and the phase diagram is symmetric
-under relabelling.)
-The continuous colour values endow each node with a ``conviction'':
+Ties between channel values are uncommon: states are
+initialized continuously and then updated in increments of
+$\delta = 1/255$.
+When ties occur they are resolved by a deterministic
+implementation rule (documented in the public code).
+Because ties are rare and the three species are otherwise
+treated identically, the choice of tie-breaker does not affect
+the reported phase behavior within numerical resolution; the
+phase diagram is symmetric under species relabeling.
+The continuous color values endow each node with a ``conviction'':
 the \emph{dominance margin} is the difference between the
 dominant channel and the maximum of the other two.
-A node with colour $(0.78, 0.12, 0.04)$ is strongly red
+A node with color $(0.78, 0.12, 0.04)$ is strongly red
 (margin~$0.67$), while $(0.35, 0.33, 0.31)$ is weakly red
 (margin~$0.02$) and easily converted.
 
 At each elementary step a node~$i$ is chosen uniformly at random
-and interacts with each of its neighbours~$j$.
+and interacts with each of its neighbors~$j$.
 Channel values change in increments of
 $\delta = 1/255 \approx 0.004$:
 \begin{itemize}
@@ -194,7 +217,7 @@ $\delta = 1/255 \approx 0.004$:
 \end{itemize}
 
 A collective reinforcement rule amplifies local consensus:
-if at least $\rmin$ of~$i$'s neighbours share the same dominant
+if at least $\rmin$ of~$i$'s neighbors share the same dominant
 type (as determined by the edge relationship after competition),
 that channel receives an additional increment.
 All experiments use $\rmin = 4$ unless otherwise noted.
@@ -204,14 +227,14 @@ corresponding to one sweep of the lattice in expectation.
 
 \subsection{Mutation}
 
-After node~$i$ has interacted with all its neighbours and
+After node~$i$ has interacted with all its neighbors and
 reinforcement has been applied, $i$~is reset to a uniformly
-random colour---each channel drawn independently and uniformly
+random color---each channel drawn independently and uniformly
 from $[0, 1]$---with probability~$\mu$.
 Mutation is applied once per node activation, not once per
 pairwise interaction.
 This mutation is the noise parameter that drives the
-phase transition: low~$\mu$ favours local order;
+phase transition: low~$\mu$ favors local order;
 high~$\mu$ disrupts it.
 
 \subsection{Adaptive topology}
@@ -221,31 +244,52 @@ lattice but allows the network to rewire.
 After each pairwise interaction between nodes~$i$ and~$j$:
 \begin{itemize}
   \item If the edge is \textbf{compatible} (endpoints share
-        dominant type after competition): with probability
-        $1/N$, a new edge is created between node~$i$ and
-        a uniformly random compatible node anywhere in the
-        system, provided both endpoints are below the degree
-        cap~$\kmax$.
-        Up to~8 random candidates are tried; if none qualifies
-        (due to degree cap, existing edge, or self-loop),
-        the attempt is discarded.
+        dominant type after competition) and the focal node $i$
+        has degree $< \kmax$: with probability $1/N$, $i$ attempts
+        to form a new edge to a non-neighbor.
+        Up to~8 candidate indices are drawn uniformly at random
+        from $\{0, \ldots, N{-}1\}$; a candidate is accepted if
+        it is not~$i$ or~$j$, is not already a neighbor of~$i$,
+        and itself has degree $< \kmax$.
+        If none of the 8 candidates qualifies, the formation
+        attempt is discarded.
+        The new edge target is \emph{not} required to share~$i$'s
+        dominant type: compatibility-triggered formation selects
+        \emph{when} a node attempts to grow its neighborhood, and
+        subsequent severance of incompatible edges then prunes
+        the topology.
+        Homophilic clustering therefore arises from
+        compatibility-triggered formation plus selective survival,
+        not from explicitly choosing same-type targets.
   \item If the edge is \textbf{incompatible} (endpoints differ):
         with probability $1/N$, the edge is severed, provided
         both endpoints retain degree $\geq 2$.
 \end{itemize}
-The maximum degree is capped at $\kmax = 8$ (twice the
-initial lattice degree; the qualitative results are not
-sensitive to this choice provided $\kmax$ is moderately
-above~4, as it determines the dynamic range of $\kavg$).
+The maximum degree is capped at $\kmax = 8$ (twice the initial
+lattice degree).
+This cap is not a passive parameter: changing $\kmax$ alters
+the equilibrium mean degree $\kavg$, which in turn changes the
+number of pairwise interactions per node activation, the
+reinforcement-firing probability under fixed $\rmin$, and the
+per-frame rewiring opportunity (Section~\ref{sec:local_control}).
 The minimum degree floor of~$2$ reduces the frequency of
 isolated nodes and extreme fragmentation, but does not
 guarantee global connectivity.
 
-Since each of $N$ node activations per frame involves
-$O(k)$ pairwise interactions, each with rewiring
-probability $1/N$, the expected number of rewiring events
-per frame is $O(\kavg)$---of order unity per frame,
-scaling with the system.
+The rewiring probability is $1/N$ per pairwise interaction, and
+each frame contains $O(N\kavg)$ pairwise interactions
+(${\sim}N$ activations $\times$ $O(\kavg)$ neighbors each), so
+the expected number of rewiring events per frame is $O(\kavg)$,
+\emph{independent of $N$ for bounded degree}.
+Extensive topological relaxation therefore requires $O(N)$
+frames.
+
+Each run is initialized from a 64-bit seed; the seed deterministically
+sets the initial colors and the state of the pseudo-random number
+generator used for all subsequent uniform draws (node selection,
+mutation, candidate sampling, severance acceptance).
+Two runs with the same seed and parameters produce identical
+trajectories.
 
 In the ordered phase ($\mu < \mc$), nodes cluster near
 the degree cap: at $\mu = 0.33$, approximately $82\%$ of
@@ -258,7 +302,7 @@ The degree distribution is thus strongly phase-dependent
 
 The result is that ordered regions recruit long-range connections
 while disordered boundaries shed them.
-The topology and dynamics co-evolve: the network is
+The topology and dynamics coevolve: the network is
 simultaneously the arena for competition and a product of it.
 A control variant restricts new-edge formation to nodes within
 graph distance~2 of the focal node while keeping all other
@@ -276,12 +320,13 @@ selection.
 \label{alg:update}
 \begin{tabular}{@{}r@{\;}l@{}}
 \toprule
-1. & Snapshot neighbour list $\mathcal{N}(i)$ \\
+1. & Snapshot neighbor list $\mathcal{N}(i)$ \\
 2. & \textbf{for each} $j \in \mathcal{N}(i)$: \\
 3. & \quad \textbf{if} same dominant type: \\
 4. & \qquad increment shared channel on both $i$ and $j$ \\
-5. & \qquad [adaptive] with prob.\ $1/N$: form edge to random \\
-   & \qquad compatible node \\
+5. & \qquad [adaptive] with prob.\ $1/N$: attempt to form edge \\
+   & \qquad from $i$ to random non-neighbor (both endpoints \\
+   & \qquad must have degree $< \kmax$) \\
 6. & \quad \textbf{else}: \\
 7. & \qquad weaker node shifts one unit toward winner \\
 8. & \qquad [adaptive] with prob.\ $1/N$: sever edge $i$--$j$ \\
@@ -319,10 +364,10 @@ size, including $\Lsys = 384$.
 \subsection{Note on the reinforcement threshold}
 
 On the fixed 4-regular lattice, $\rmin = 4$ requires all four
-neighbours to agree before reinforcement fires---effectively
+neighbors to agree before reinforcement fires---effectively
 a unanimity rule.
 On the adaptive network, where degree can reach $\kmax = 8$,
-the same $\rmin = 4$ requires only half the neighbours to agree.
+the same $\rmin = 4$ requires only half the neighbors to agree.
 This asymmetry is inherent to applying a fixed threshold
 across variable-degree topologies.
 We address its consequences with a control experiment
@@ -330,20 +375,24 @@ We address its consequences with a control experiment
 on the fixed lattice does not change the transition character.
 
 % ══════════════════════════════════════════════════════════════════════════════
-\section{Fixed lattice: smooth transition}
+\section{Fixed lattice: smooth crossover at $\Lsys = 128$}
 \label{sec:fixed}
 
-On the fixed 4-regular torus ($\Lsys = 128$, 64 seeds,
-50\,000 frames), boundary density decreases smoothly with
-decreasing mutation probability
+On the fixed 4-regular torus, at the tested system size
+($\Lsys = 128$, 64 seeds, 50\,000 frames), boundary density
+decreases smoothly with decreasing mutation probability
 (Fig.~\ref{fig:fixed_phase}, Table~\ref{tab:fixed}).
 No discontinuity is observed at any $\mu$ tested:
 $\rb$ ranges from $0.48$ at $\mu = 0.33$
 to $0.08$ at $\mu = 0.10$, with a smooth crossover
 near $\mu \approx 0.20$.
-This section serves as a baseline: the fixed lattice
-transition is smooth, and Section~\ref{sec:adaptive}
-asks what changes under adaptive rewiring.
+This section serves as a baseline: the tested fixed-lattice
+behavior at $\Lsys = 128$ is smooth, and
+Section~\ref{sec:adaptive} asks what changes under adaptive
+rewiring.
+We do not claim this as a thermodynamic statement about the
+fixed-lattice transition; multi-size fixed-lattice scaling
+is left to future work.
 
 % --- Fixed lattice phase diagram ---
 \begin{figure}[t]
@@ -362,12 +411,13 @@ asks what changes under adaptive rewiring.
 \input{tables}
 
 % ══════════════════════════════════════════════════════════════════════════════
-\section{Adaptive network: sharp transition}
+\section{Adaptive network: sharp finite-size transition}
 \label{sec:adaptive}
 
-Allowing edges to co-evolve qualitatively changes the transition.
+Allowing edges to coevolve qualitatively changes the
+finite-size transition relative to the fixed-lattice baseline.
 
-\subsection{Sharp jump in coupled order parameters}
+\subsection{Sharp finite-size jump in coupled order parameters}
 
 The phase diagram of the adaptive network
 (Fig.~\ref{fig:dyn_phase}, Table~\ref{tab:adaptive}) shows
@@ -375,8 +425,11 @@ both order parameters changing sharply between
 $\mu = 0.35$ and $\mu = 0.355$.
 At $\mu = 0.35$, the majority of seeds converge to the
 ordered phase ($\rb \approx 0.17$, $\kavg \approx 6.0$);
-at $\mu = 0.355$, most seeds have crossed to the disordered
-phase ($\rb \approx 0.48$, $\kavg \approx 4.2$).
+at $\mu = 0.355$, the per-seed distribution is bimodal
+(see Section~\ref{sec:topo_indep}), and the reported seed
+mean $\rb \approx 0.48$, $\kavg \approx 4.2$ is therefore
+not a typical single-seed value but the mean over a
+two-basin distribution.
 By $\mu = 0.36$, all seeds are fully disordered
 ($\rb = 0.55$, $\kavg = 3.9$).
 The boundary density increases by a factor of ${\sim}3\times$
@@ -395,19 +448,28 @@ narrow window.
     $\kavg$ (blue, right axis) vs.\ mutation probability~$\mu$.
     Both order parameters change sharply in the window
     $\mu \in [0.35, 0.355]$.
+    Within this window the per-seed distribution is bimodal
+    (Fig.~\ref{fig:hist_coex}), so the plotted means are
+    averages across two basins, not typical single-seed
+    values; the distributional view in Fig.~\ref{fig:hist_coex}
+    is the more informative summary in this region.
   }
   \label{fig:dyn_phase}
 \end{figure}
 
-\subsection{Topology-independent confirmation and coexistence}
+\subsection{Topology-independent confirmation and finite-size coexistence}
+\label{sec:topo_indep}
 
-Because $\rb$ and $\kavg$ depend on the edge set, the
-sharp jump could in principle be a denominator artifact.
-A purely state-based observable, the dominant-species fraction
-$f_\mathrm{dom} = \max(n_R, n_G, n_B)/N$
-(Fig.~\ref{fig:fdom}), drops sharply from $\approx 0.9$ to
-$\approx 1/3$ across the same window, indicating a genuine
-state transition rather than a denominator artifact.
+Because $\rb$ depends on the edge set (both numerator and
+denominator), a sharp jump in $\rb$ alone could in principle
+be a topological artifact of changing connectivity rather than
+of the node states.
+We rule this out with a state-only observable: the dominant-species
+fraction $f_\mathrm{dom} = \max(n_R, n_G, n_B)/N$
+(Fig.~\ref{fig:fdom}), which drops sharply from $\approx 0.9$
+to $\approx 1/3$ across the same window---identical jump
+location, no edge set in the definition---confirming the
+transition reflects a genuine state change.
 
 % --- f_dom figure ---
 \begin{figure}[t]
@@ -450,25 +512,40 @@ weaken with increasing system size.
   \centering
   \includegraphics[width=\textwidth]{fig_hist_coexistence.pdf}
   \caption{%
-    \textbf{Distribution of per-seed $\rb$ across the transition}
+    \textbf{Distribution of per-seed $\rb$ across the
+    finite-size transition at $\Lsys = 128$}
     on the adaptive network
-    ($128 \times 128$, 64 seeds, 30k frames).
-    At $\mu = 0.355$, the distribution is clearly bimodal
-    with an empty gap between ordered and disordered basins.
-    Vertical dashed lines mark the mean.
-    Some seeds near the transition may undergo basin
-    switching during the averaging window (cf.~Sec.~S3).
+    (64 seeds, 30k frames).
+    At $\mu = 0.355$, the distribution is clearly bimodal at
+    this size, with an empty gap between ordered and disordered
+    basins; this is the strongest coexistence-like signature at
+    $\Lsys = 128$.
+    Vertical dashed lines mark the seed mean (which, at this
+    $\mu$, sits between the basins and is not representative of
+    any single seed).
+    Some seeds near the transition may undergo basin switching
+    during the averaging window (cf.~Sec.~S3).
   }
   \label{fig:hist_coex}
 \end{figure*}
 
 \subsection{Variance spike and initial-condition dependence}
+\label{sec:variance_spike}
 
-The seed-to-seed variance of $\rb$ peaks at
-$\mu = 0.355$ with
-$\mathrm{var}(\rb) = 1.5 \times 10^{-2}$---four to five
-orders of magnitude above the quiet-phase background
-(Fig.~\ref{fig:dyn_phase}, inset).
+The \emph{seed-to-seed variance of the per-run second-half
+time-averaged $\rb$} peaks sharply at $\mu = 0.355$, with
+$\mathrm{var}(\rb) = 1.5 \times 10^{-2}$, against an
+off-transition background of $\mathrm{var}(\rb) \sim 10^{-7}$
+in both phases (Table~\ref{tab:adaptive};
+Fig.~\ref{fig:dyn_phase}, inset).
+The off-transition background reflects tight single-basin
+sampling within seeds; the peak reflects seeds splitting between
+two basins.
+We use the spike to \emph{localize} the transition, not as a
+diagnostic of its order: a peak in seed-to-seed variance occurs
+at both continuous and first-order transitions, so the magnitude
+of the ratio to the off-transition value reflects the basin
+separation rather than the transition order.
 
 To test for initial-condition dependence, we run at
 $\mu = 0.34$, $0.35$, and $0.36$ from both random and
@@ -488,7 +565,7 @@ strong hysteresis.
 
 To isolate which features of the rewiring drive the
 sharpening, we ran two families of controls: a local-only
-control restricting new edges to distance-2 neighbours
+control restricting new edges to distance-2 neighbors
 (all other rules identical), and a degree-cap sweep
 varying $\kmax$.
 
@@ -502,20 +579,20 @@ $\kmax = 8$.
 On the local-only network, $\rb$ rises smoothly from
 $\approx 0.13$ at $\mu = 0.33$ to $\approx 0.48$ at
 $\mu = 0.50$, with no sharp jump at any $\mu$ tested.
-The restriction removes the sharp transition, but it also
-shrinks the candidate pool from $O(N) \approx 16{,}000$
-compatible nodes system-wide to $O(k^2) \approx 50$--$60$
-within graph distance~2 at $\kmax = 8$, so it does not
-isolate non-locality from formation rate.
+The restriction removes the sharp jump, but it also shrinks
+the candidate non-neighbor pool from $O(N) \approx 16{,}000$
+system-wide to $O(k^2) \approx 50$--$60$ within graph
+distance~2 at $\kmax = 8$, so it does not isolate non-locality
+from formation rate.
 
 A second family of controls varies the degree cap.
 At $\kmax = 4$ on the global adaptive network (matching the
-fixed-lattice degree), the sharp transition vanishes: $\rb$
+fixed-lattice degree), the sharp finite-size jump vanishes: $\rb$
 rises smoothly from $\approx 0.15$ ($\mu = 0.15$) to
 $\approx 0.56$ ($\mu = 0.50$), with seed-to-seed variance
 three orders of magnitude below the $\kmax = 8$ case.
 Because the network starts at degree~$4 = \kmax$, there is
-no headroom for edge accumulation: at initialisation every
+no headroom for edge accumulation: at initialization every
 node is already at the cap, so formation attempts fail until
 severance opens a slot, and mean degree drops monotonically
 to $\kavg \approx 3.0$--$3.7$.
@@ -536,22 +613,36 @@ $\mu$ with increasing headroom.
 Over the tested values, the sharp jump is absent at
 $\kmax = 4$ and present for $\kmax \geq 5$, suggesting a
 threshold-like onset of the sharp coexistence-like
-behaviour once some degree headroom is available.
+behavior once some degree headroom is available.
 
-Together with the fixed-lattice baseline and the
-local-only control, this $\kmax$ sweep implicates degree
-headroom as a contributing topological ingredient:
-the sharp behaviour requires some room for like-state
-edges to accumulate, but does not require the full
-$\kmax = 8$ headroom of the standard setting.
-The headroom interpretation is partially confounded
-with a reinforcement-firing-rate effect at $\kmax = 4$
-(see Section~\ref{sec:mechanism}), and the local-only
-control is confounded by candidate-pool shrinkage; an
-unconfounded test of either would require an $\rmin$
-sweep on the adaptive network or a matched-formation-rate
-non-local control respectively, both left to future
-work.
+Together with the fixed-lattice baseline and the local-only
+control, this $\kmax$ sweep is \emph{consistent with} a
+headroom requirement: some room for degree to accumulate in
+ordered regions appears necessary for the sharp jump, though
+the
+full $\kmax = 8$ headroom of the standard setting is not.
+The reading is not, however, an unconfounded measurement of
+headroom alone.
+Three coupled effects vary together with $\kmax$:
+(i)~the equilibrium ordered-phase mean degree changes
+($\kavg \approx 3.1, 4.8, 5.8, 7.9$ at
+$\kmax = 4, 5, 6, 8$), so the per-activation interaction
+count varies;
+(ii)~the reinforcement-firing probability under fixed
+$\rmin = 4$ varies with $\kavg$ (it is structurally suppressed
+at $\kmax = 4$ where $\kavg < \rmin$, and the effective ratio
+$\rmin/\kavg$ varies from ${\approx}0.83$ to $0.51$ across
+$\kmax \in \{5, 6, 8\}$); and
+(iii)~the per-frame rewiring opportunity scales with $\kavg$.
+A monotonic shift of the jump location with $\kmax$ is
+therefore consistent with several mechanisms beyond pure
+topological headroom.
+The local-only control is similarly confounded by
+candidate-pool shrinkage from $O(N)$ to $O(k^2)$.
+Cleanly isolating any one of these factors would require an
+$\rmin$ sweep on the adaptive network at fixed $\kmax = 8$
+and a matched-formation-rate non-local control, both left to
+future work.
 
 % --- Four-way comparison figure ---
 \begin{figure}[t]
@@ -564,10 +655,10 @@ work.
     $\kmax = 8$ (purple), and global adaptive at four degree
     caps $\kmax \in \{4, 5, 6, 8\}$
     (green, light orange, dark orange, red).
-    The sharp coexistence-like jump is absent at
-    $\kmax = 4$ but present at every $\kmax \geq 5$;
-    the jump location shifts to higher~$\mu$ with
-    increasing headroom.
+    The coexistence-like finite-size jump at $\Lsys = 128$ is
+    absent at $\kmax = 4$ but present at every
+    $\kmax \geq 5$; the jump location shifts to higher~$\mu$
+    with increasing headroom.
     Caveats: at $\kmax = 4$ the mean ordered-phase degree
     drops below $\rmin$, so reinforcement firing is
     suppressed by construction (see
@@ -581,19 +672,34 @@ work.
 \subsection{Reinforcement-threshold control}
 \label{sec:rmin_control}
 
-To rule out an effective-threshold artifact ($\rmin = 4$
-is unanimity at degree~4 but only a $50\%$ majority at
-degree~8), we repeated the fixed-lattice experiment with
-$\rmin = 2$ (64 seeds, 50\,000 frames), matching the
-fractional threshold of $\rmin = 4$ at degree~8.
-The transition remains smooth and $\rb$ values shift
-downward only slightly, making effective-threshold
-mismatch unlikely as the explanation.
+To probe an effective-threshold artifact ($\rmin = 4$ is
+unanimity at degree~4 but only a $50\%$ majority at degree~8),
+we repeated the fixed-lattice experiment with $\rmin = 2$
+(64 seeds, 50\,000 frames), matching the fractional threshold
+of $\rmin = 4$ at degree~8.
+The $\Lsys = 128$ fixed-lattice curve remains smooth under this
+match, and $\rb$ values shift downward only slightly.
+The smooth fixed-lattice behavior therefore survives a
+fractional-threshold match to the adaptive network, so the
+fixed-lattice/adaptive contrast is not produced by the
+threshold mismatch alone.
+A separate confound---the dynamic variation of $\rmin/\kavg$
+with phase on the adaptive network---is not addressed here
+and is discussed in Section~\ref{sec:mechanism}.
 
 % ══════════════════════════════════════════════════════════════════════════════
-\section{Finite-size scaling}
+\section{Finite-size behavior near the sharp transition}
 \label{sec:fss}
 
+This section presents two complementary finite-size scans:
+a bistability scan at fixed $\mu = 0.35$ across
+$\Lsys \in \{64, 128, 256\}$ to show that seeds split between
+basins at accessible sizes (this subsection), and a denser
+Binder-cumulant scan across a finer $\mu$ grid with twice the
+seed count to test how this finite-size signature evolves with
+system size (Section~\ref{sec:binder}).
+
+\paragraph{Bistability at fixed $\mu$}
 We measure $\rb$ at $\mu = 0.35$ for $\Lsys = 64$, $128$,
 and~$256$, with both random and ordered initial conditions
 (32~seeds each; Table~\ref{tab:fss}).
@@ -617,68 +723,124 @@ this value with increasing~$\Lsys$
 increase reflects the approach to the pseudocritical point.
 Nonetheless, the strong broadening and bimodal splitting
 at $\Lsys = 128$ and $256$ indicate coexistence-like
-behaviour at accessible system sizes.
+behavior at accessible system sizes.
 
 \subsection{Binder cumulant}
 \label{sec:binder}
 
-The Binder cumulant
+The Binder analysis is a separate, denser scan than the
+bistability check above: a fine $\mu$ grid
+($\Delta\mu = 0.001$) with 64 seeds per $(\Lsys, \mu)$
+point---twice the per-condition seed count of the
+bistability scan---at $\Lsys \in \{64, 128, 256, 384\}$.
+We compute the Binder cumulant
 $U_\Lsys = 1 - \langle \rb^4 \rangle /
-(3 \langle \rb^2 \rangle^2)$,
-where averages are over seeds, provides a standard test
-for first-order transitions: $U_\Lsys \to 2/3$ for a
-single-peaked distribution, and $U_\Lsys$ develops a
-negative dip when the distribution is bimodal.
+(3 \langle \rb^2 \rangle^2)$
+from the second-half time-averaged $\rb$ value of each
+independent seed (one value per seed), with the moments
+$\langle \cdot \rangle$ taken across the seed ensemble.
+For a tight single-peaked distribution $U_\Lsys \to 2/3$;
+when the distribution is bimodal, $U_\Lsys$ develops a dip
+below $2/3$.
+For a conventional first-order transition the bimodal peaks
+survive $\Lsys \to \infty$, so $U_\mathrm{min}$ should remain
+below $2/3$ (the bounded support $\rb \in [0, 1]$ means it
+need not diverge as in the unbounded-magnetization case, but
+it should not recover toward the single-peak value).
+An upward trend toward $2/3$ over the size range where the
+trend is measured is therefore inconsistent with first-order
+behavior.
+
+\paragraph{Caveats specific to a one-sided order parameter}
+Standard Binder analysis is formulated for a symmetric order
+parameter (e.g., Ising magnetization, where the disordered
+phase has $\langle m \rangle = 0$ and the ordered phase has
+$|m| \neq 0$, so $U_\Lsys$ takes different limits in the two
+phases and its curves cross near $\mc$).
+Here $\rb \in [0, 1]$ is one-sided: it has nonzero mean in
+both phases, so a tight ordered single peak ($\rb \approx 0.1$)
+and a tight disordered single peak ($\rb \approx 0.55$) both
+give $U_\Lsys \to 2/3$.
+Only bimodality drives $U_\Lsys$ below $2/3$.
+Consequently the diagnostic content of $U_\Lsys$ in this paper
+is the dip \emph{depth} as a function of $\Lsys$, not a
+universal-value crossing of $U_\Lsys$ curves at $\mc$, which
+the standard analysis is not set up to deliver here.
 
 Figure~\ref{fig:binder} shows $U_\Lsys$ vs.\ $\mu$ for
-$\Lsys = 64$, $128$, $256$, and $384$, all with fine
-$\mu$ grids ($\Delta\mu = 0.001$; 64 seeds at every
-size).
-Run lengths scale with system size:
-$\Lsys = 64$ and $128$ use 30\,000--50\,000 frames,
-$\Lsys = 256$ uses 100\,000 frames, and
-$\Lsys = 384$ uses 200\,000 frames---twice as long as
-$\Lsys = 256$, partially compensating for slower
-equilibration at the largest size.
-Spot-checks of $\rb$ time series at $\Lsys = 384$ show
-similar within-run basin-switching near $\mc$ to that
-documented at $\Lsys = 256$ (Supplementary Material,
-Sec.~S3); the doubled run length improves but does not
-eliminate this near-critical residence-mixing effect.
+$\Lsys = 64$, $128$, $256$, and $384$.
+Run lengths are 30\,000--50\,000 frames at
+$\Lsys \in \{64, 128\}$, $100\,000$ frames at $\Lsys = 256$,
+and $200\,000$ frames at $\Lsys = 384$.
+For $\Lsys \in \{128, 256\}$ this roughly tracks $\Lsys^2$
+scaling, and qualitative time-series spot-checks
+(Supplementary Material, Sec.~S3) suggest comparable coverage
+of $\tau_\mathrm{eq}$ at the two sizes.\footnote{%
+A quantitative integrated-autocorrelation-time measurement
+of $\rb$ vs.\ $\Lsys$ would put this on a firmer footing and
+is part of the future-work list (Section~\ref{sec:discussion}).}
 
-The \emph{position} of the minimum shifts to lower~$\mu$
-with increasing~$\Lsys$:
+At $\Lsys = 384$ run lengths fall short of the same scaling:
+matching the per-$\tau_\mathrm{eq}$ coverage of $\Lsys = 256$
+under a plausible dynamical exponent $z \gtrsim 2$ would
+require ${\sim}225\,000$ frames or more, so the $200\,000$-frame
+$\Lsys = 384$ runs cover fewer autocorrelation times than the
+smaller-size runs, and time-series spot-checks confirm
+within-run basin-switching similar to $\Lsys = 256$
+(Supplementary Material, Sec.~S3).
+The $\Lsys = 384$ point should therefore be treated as
+supporting but not as load-bearing: incomplete sampling of
+basin residence times can bias the per-seed Binder estimate,
+and the direction of that bias depends on the balance between
+trapped single-basin trajectories (which push $U_\mathrm{min}$
+toward $2/3$) and trajectories that switch during the averaging
+window (which can push it the other way).
+The trend that drives the conclusions below is therefore the
+$\Lsys = 128 \to 256$ comparison, where run lengths more
+nearly track the expected $\Lsys^2$-like scaling.
+
+The \emph{position} of the minimum shifts to lower~$\mu$ with
+increasing~$\Lsys$:
 $\mu^*(64) \approx 0.360$,
 $\mu^*(128) \approx 0.352$,
 $\mu^*(256) \approx 0.349$,
 $\mu^*(384) \approx 0.348$.
 The drift slows with increasing~$\Lsys$, consistent with
-convergence toward a finite limiting value, though four
-points do not permit a reliable extrapolation.
-However, the dip \emph{depth} shallows monotonically
-(bootstrap 95\% CI in brackets):
+convergence toward a finite limiting value, though four points
+do not permit a reliable extrapolation.
+The measured dip values are (bootstrap 95\% CI in brackets,
+64 seeds at each size):
 $U_\mathrm{min} = -0.39\;[-0.85, -0.05]$ ($\Lsys = 64$),
 $0.26\;[0.18, 0.36]$ ($\Lsys = 128$),
 $0.52\;[0.49, 0.55]$ ($\Lsys = 256$),
-and $0.58\;[0.56, 0.61]$ ($\Lsys = 384$);
-all with 64 seeds.
-The confidence intervals do not overlap between
-successive sizes from $\Lsys = 128$ onward, consistent
-with statistically robust shallowing given the
-seed counts.
-(At $\Lsys = 64$ the system contains only 4096 nodes and
-the deep negative dip may partly reflect small-system
-fluctuations; the shallowing trend from $\Lsys = 128$
-onward is the more reliable indicator.)
-For a standard first-order transition the dip should
-deepen without bound as $\Lsys \to \infty$; instead the
-minimum recovers steadily toward the single-phase value
-$U = 2/3$, consistent with a sharp but \emph{continuous}
-transition over the tested size range.
-A weakly first-order alternative, in which the Binder
-crossover length exceeds $\Lsys = 384$, cannot be
-excluded with four sizes; settling the question
-definitively would require systems beyond $\Lsys = 384$.
+and $0.58\;[0.56, 0.61]$ ($\Lsys = 384$).
+Confidence intervals are computed by resampling per-seed $\rb$
+values with replacement (seed-level non-parametric bootstrap,
+2000 resamples; $U_\mathrm{min}$ recomputed on each resample
+and the 2.5/97.5 percentiles reported).
+The load-bearing finding is the $\Lsys = 128 \to 256$ change:
+$U_\mathrm{min}$ moves from $0.26$ to $0.52$ (CIs
+non-overlapping), a substantial fraction of the way to the
+single-peak value $2/3$ at run lengths that roughly satisfy
+$\Lsys^2$ scaling.
+This is inconsistent with a first-order Binder dip, which
+should not approach the single-peak value at larger~$\Lsys$.
+The $\Lsys = 64$ point lies in the same direction but the
+system contains only 4096 nodes; small-system corrections
+plausibly dominate, and it is consistent with the
+$\Lsys = 128 \to 256$ trend only if those corrections are
+accepted.
+The $\Lsys = 384$ point is also consistent with the trend but,
+as discussed above, is downgraded given the equilibration
+limitation.
+Taken together, the data disfavor a conventional first-order
+interpretation over the tested sizes and are consistent with
+a sharp continuous transition.
+We do not claim to have established a continuous transition:
+a weakly first-order transition with a Binder crossover length
+beyond $\Lsys = 384$ would mimic the same finite-size signature,
+and settling the asymptotic order would require systems
+substantially beyond $\Lsys = 384$ and longer run lengths.
 
 % --- Binder cumulant figure ---
 \begin{figure}[t]
@@ -686,12 +848,19 @@ definitively would require systems beyond $\Lsys = 384$.
   \includegraphics[width=\columnwidth]{fig_binder_sweep.pdf}
   \caption{%
     \textbf{Binder cumulant $U_\Lsys$ vs.\ $\mu$}
-    for $\Lsys = 64$, $128$, $256$, and $384$ on the
-    adaptive network (fine $\mu$ grids, $\Delta\mu = 0.001$).
-    The dip shifts to lower~$\mu$ with
-    increasing~$\Lsys$ (pseudocritical drift) and shallows
-    monotonically toward $2/3$, consistent with a sharp
-    continuous transition over the tested size range.
+    for $\Lsys = 64$, $128$, $256$, and $384$ on the adaptive
+    network (fine $\mu$ grids, $\Delta\mu = 0.001$; 64 seeds
+    per point).
+    The dip shifts to lower~$\mu$ with increasing~$\Lsys$
+    (pseudocritical drift).
+    The primary finding is that $U_\mathrm{min}$ moves from
+    $0.26$ at $\Lsys = 128$ to $0.52$ at $\Lsys = 256$ (CIs
+    non-overlapping), a substantial fraction of the way to the
+    single-peak value $2/3$ and inconsistent with conventional
+    first-order scaling.
+    The $\Lsys = 64$ and $\Lsys = 384$ points are consistent
+    with this trend but each carries a caveat (small-system
+    corrections and equilibration respectively; see text).
   }
   \label{fig:binder}
 \end{figure}
@@ -703,26 +872,24 @@ window $\mu \in [0.347, 0.349]$ around the Binder
 minimum---substantially narrower than the $\Lsys = 128$
 bimodal window of Figure~\ref{fig:hist_coex}, consistent
 with the same sharpening-yet-continuous trend as the
-Binder shallowing.
+Binder recovery toward $2/3$.
 
-A two-parameter Binder collapse
-$U_\Lsys(\mu) = \tilde{U}((\mu-\mc)\Lsys^{1/\nu})$ does
-not succeed for $\Lsys \in \{128, 256, 384\}$:
-the $\Lsys = 128$ dip is too deep to be absorbed by any
-rescaling, consistent with $\Lsys = 128$ lying outside
-the regime where the leading-order finite-size scaling
-form holds.
-Restricting to $\Lsys \in \{256, 384\}$ yields a tight
-collapse, but with only two curves and two free
-parameters the exponent is weakly constrained
-(bootstrap 95\% CI: $1/\nu \in [0.97, 1.99]$,
-spanning standard two-dimensional continuous-transition
-exponents without selecting one).
-The collapse is therefore consistent with a continuous
-transition over the tested sizes but does not assign a
-specific universality class;
-see Supplementary Material, Sec.~S1
-for the full analysis and figure.
+As a consistency check we attempted a two-parameter Binder
+collapse $U_\Lsys(\mu) = \tilde{U}((\mu - \mc)\Lsys^{1/\nu})$.
+The collapse fails for $\Lsys \in \{128, 256, 384\}$ (the
+$\Lsys = 128$ dip is too deep to be absorbed by any
+rescaling, consistent with $\Lsys = 128$ lying outside the
+leading-order finite-size scaling regime).
+Restricting to two curves $\Lsys \in \{256, 384\}$ yields a
+tight collapse, but two curves with two free parameters
+provide essentially no constraint on the exponent (bootstrap
+95\% CI $1/\nu \in [0.97, 1.99]$ spans the standard
+two-dimensional continuous-transition exponents without
+selecting one).
+We therefore do not assign a universality class from this
+analysis and treat the collapse only as a consistency check;
+see Supplementary Material, Sec.~S1 for the full procedure
+and figure.
 
 
 % ══════════════════════════════════════════════════════════════════════════════
@@ -734,7 +901,7 @@ for the full analysis and figure.
 
 The control experiments in Section~\ref{sec:local_control}
 narrow the set of topological ingredients that contribute
-to the sharp transition.
+to the sharp finite-size transition at $\Lsys = 128$.
 Sweeping $\kmax \in \{4, 5, 6, 8\}$ shows that any degree
 headroom (one unit or more) recovers the sharp
 coexistence-like jump, with the jump location shifting
@@ -775,68 +942,110 @@ a definitive disentanglement would require an
 $\rmin$ sweep on the adaptive network at fixed
 $\kmax = 8$, which we leave to future work.
 
-The observed behaviour is consistent with a
-homophily--topology feedback loop:
-in the ordered phase, compatible neighbours accumulate
-degree ($\kavg \approx 7$--$8$ at $\kmax = 8$), providing
-more reinforcement and competition partners of the same
-type and stabilising order against mutation;
-in the disordered phase, incompatibility drives edge
-severance, lowering $\kavg$ to $\approx 3$--$4$, and
-sparse connectivity makes spontaneous ordering difficult.
-At intermediate system sizes this loop produces
-coexistence-like behaviour in which ordered and
-disordered basins are not cleanly separated;
-the Binder cumulant trend (Section~\ref{sec:binder})
-shows that these signatures weaken at larger~$\Lsys$,
-indicating that any effective barrier does not grow
-unboundedly with system size.
+\paragraph{Interpretation: a homophily--topology feedback loop}
+We offer the following picture as an interpretation of the data
+above, not as an independently established mechanism.
+In the ordered phase, compatible neighbors trigger formation
+events that accumulate degree ($\kavg \approx 7$--$8$ at
+$\kmax = 8$), and the larger neighborhood provides both more
+reinforcement firings and more competition partners of the
+same type, stabilizing order against mutation;
+in the disordered phase, incompatibility drives severance,
+$\kavg$ falls toward the floor ($\approx 3$--$4$), and sparse
+connectivity makes spontaneous ordering difficult.
+At intermediate system sizes this positive feedback produces
+the coexistence-like signatures of
+Section~\ref{sec:adaptive}; the Binder cumulant trend
+(Section~\ref{sec:binder}) shows that these signatures weaken
+at larger~$\Lsys$, indicating that any effective free-energy
+barrier between basins does not grow unboundedly with system
+size.
 This picture is qualitatively consistent with prior
 adaptive-network results in voter, SIS, and cyclic-dominance
 models~\cite{holme2006nonequilibrium,vazquez2008generic,gross2006epidemic,min2017fragmentation,marceau2010adaptive,demirel2011cyclic,durrett2012graph},
-where positive feedback between state coherence and
-network structure has been identified as a generic
-sharpening mechanism.
+where positive feedback between state coherence and network
+structure has been identified as a generic sharpening
+mechanism.
+The loop predicts a directional, falsifiable signal: an
+$\rmin$ sweep at fixed $\kmax = 8$ (which decouples the
+reinforcement threshold from $\kavg$ without changing the
+topology dynamics) should shift~$\mc$ \emph{downward} as
+$\rmin$ rises---because fewer firings per frame in the
+ordered phase reduces the mutation rate the system can
+absorb before losing order---and \emph{upward} as $\rmin$
+falls.
+Testing this is left to future work.
 
 \subsection{Limitations and future work}
 
-Several aspects of this study would benefit from
-further investigation.
-Equilibration near $\mc$ remains the principal
-technical limitation: time-series spot-checks at both
-$\Lsys = 256$ and $\Lsys = 384$ show that some seeds
-undergo within-run basin-switching during the
-averaging window, so second-half averages near the
-Binder minimum partly conflate the two basins
-(Supplementary Material, Sec.~S3).
-A systematic relaxation-time measurement (frames to
-convergence vs.\ $\Lsys$) would clarify this further.
+Several aspects of this study would benefit from further
+investigation.
 
-The Binder cumulant dip shallows monotonically from
-$\Lsys = 128$ to $\Lsys = 384$, consistent with a
-continuous transition over the tested size range.
+\paragraph{Equilibration near $\mc$}
+Time-series spot-checks at $\Lsys = 256$ and $\Lsys = 384$
+show that some seeds undergo within-run basin-switching
+during the averaging window, so second-half averages near
+the Binder minimum partly conflate the two basins
+(Supplementary Material, Sec.~S3).
+The $\Lsys = 384$ run length is short of the $\Lsys^z$
+scaling that would match $\Lsys = 256$ coverage under a
+plausible $z \gtrsim 2$; this is the reason the
+$\Lsys = 384$ Binder value is treated as supporting rather
+than load-bearing (Section~\ref{sec:binder}).
+A quantitative integrated-autocorrelation-time measurement
+of $\rb$ vs.\ $\Lsys$ and longer $\Lsys = 384$ runs would
+clarify both effects.
+
+\paragraph{Statistical uncertainty in fourth-moment
+quantities}
+The 64-seed Binder analysis is on the low end for a
+cumulant dominated by tail behavior of the per-seed $\rb$
+distribution.
+The bootstrap CIs reported in Section~\ref{sec:binder}
+estimate sampling uncertainty conditional on the run length
+used; they do not capture equilibration uncertainty, because
+resampling partially-equilibrated samples preserves the
+equilibration bias.
+A higher seed count (e.g.\ $\geq 128$) at $\Lsys = 384$
+together with the longer runs above would tighten both
+sources of uncertainty.
+
+\paragraph{Universality class}
 The two-parameter Binder collapse at
 $\Lsys \in \{256, 384\}$ is consistent with standard
 two-dimensional continuous-transition exponents but is
 weakly constrained by only two curves
-(see Supplementary Material, Sec.~S1);
-a definitive universality-class assignment would require
-simulations at $\Lsys \geq 512$ or
-correction-to-scaling fits with additional free
-parameters.
+(Supplementary Material, Sec.~S1).
+A definitive universality-class assignment would require
+simulations at $\Lsys \geq 512$ or correction-to-scaling
+fits with additional free parameters.
 
-The mechanism claim rests on ablation controls, not on
-a direct measurement of the feedback loop.
+\paragraph{Mechanism isolation}
+The mechanism claim rests on ablation controls, not on a
+direct measurement of the feedback loop.
 The single highest-value missing control is an $\rmin$
-sweep on the adaptive network at fixed $\kmax = 8$, which
-would disentangle degree headroom from the
-reinforcement-firing-rate effect identified in
-Section~\ref{sec:mechanism}.
+sweep on the adaptive network at fixed $\kmax = 8$
+(Section~\ref{sec:mechanism}), which would disentangle
+degree headroom from the reinforcement-firing-rate effect.
 A matched-formation-rate non-local control and a
 non-local-severance control would further sharpen the
 roles of formation range and the formation/severance
 asymmetry, respectively.
-A mean-field theory for the coupled $\rb$--$\kavg$
+
+\paragraph{Discrete-state ablation}
+The model uses a continuous dominance margin
+(``conviction-weighted'' rule) for resolving conflicts.
+Whether this continuous margin is essential to the
+phenomenology, or whether a discrete three-state variant
+(e.g.\ majority-update or voter-style conflict resolution)
+on the same adaptive graph reproduces the sharp finite-size
+behavior, has not been tested.
+A near-term followup is to run such a discrete-state variant
+under otherwise identical rules and parameters and compare
+the Binder trends.
+
+\paragraph{Mean-field theory}
+A mean-field analysis for the coupled $\rb$--$\kavg$
 dynamics would help anchor the simulation results and
 predict the location of the bistable window as a function
 of model parameters.
@@ -845,33 +1054,42 @@ of model parameters.
 \section{Conclusion}
 \label{sec:conclusion}
 
-On a fixed lattice the three-colour competitive model
-shows a smooth transition.
-Adaptive non-local rewiring sharpens the transition into
-a coexistence-like one with a jump in coupled order
-parameters
-($\rb: 0.17 \to 0.48$, $\kavg: 6.0 \to 4.2$ across
-$\mu \in [0.35, 0.355]$), bimodal histograms at
-intermediate system sizes, and a variance spike four to
-five orders of magnitude above the quiet-phase
-background.
-Across $\Lsys = 128 \to 256 \to 384$ the Binder
-cumulant dip shallows monotonically and the bimodal
-window narrows---consistent with a sharp but continuous
-transition over the tested size range, with a weakly
-first-order alternative beyond $\Lsys = 384$ not
-excluded.
-%
-A degree-cap sweep ($\kmax \in \{4, 5, 6, 8\}$)
-implicates degree headroom as a contributing topological
-ingredient, with the jump location drifting monotonically
+\paragraph{What was found}
+At $\Lsys = 128$ the fixed toroidal lattice shows a smooth
+crossover-like loss of order.
+Adaptive non-local rewiring sharpens the same local rules
+into a coexistence-like finite-size jump in coupled order
+parameters ($\rb: 0.17 \to 0.48$, $\kavg: 6.0 \to 4.2$ across
+$\mu \in [0.35, 0.355]$), bimodal per-seed distributions at
+intermediate system sizes, and a sharply localized
+seed-to-seed variance peak.
+Between $\Lsys = 128$ and $\Lsys = 256$ the Binder minimum
+moves from $0.26$ to $0.52$ (CIs non-overlapping, run lengths
+roughly satisfying $\Lsys^2$ scaling)---a substantial fraction
+of the way to the single-peak value $2/3$.
+This is the load-bearing evidence: it disfavors a conventional
+first-order interpretation over the tested sizes and is
+consistent with a sharp continuous transition.
+A degree-cap sweep is consistent with a degree-headroom
+requirement, with the jump location drifting monotonically
 toward higher~$\mu$ as headroom grows.
-The headroom interpretation is partially confounded with
-a reinforcement-firing-rate effect at $\kmax = 4$
-(mean degree falls below $\rmin$) and, in the
-local-only control, with candidate-pool shrinkage;
-a definitive disentanglement would require an $\rmin$
-sweep on the adaptive network at fixed $\kmax = 8$.
+The mechanism reading is consistent with the data but does not
+rest on an unconfounded measurement; the limits are listed next.
+
+\paragraph{What remains open}
+We do not claim to have established a continuous transition.
+A weakly first-order alternative with crossover length beyond
+$\Lsys = 384$ would mimic the same finite-size signature, and
+the $\Lsys = 384$ Binder estimate is limited by fewer sampled
+autocorrelation times than the smaller-size runs.
+The mechanism is also not fully isolated: changing $\kmax$
+changes degree headroom, reinforcement firing, interaction
+count, and rewiring opportunity simultaneously, while the
+local-only control also changes the candidate pool.
+Adaptive topology therefore emerges as a strong finite-size
+sharpening mechanism in this conviction-weighted competitive
+model, while the asymptotic order of the transition and the
+clean separation of rewiring ingredients remain open.
 
 % ══════════════════════════════════════════════════════════════════════════════
 \section*{CRediT authorship contribution statement}
@@ -890,10 +1108,15 @@ influence the work reported in this paper.
 
 \section*{Data availability}
 
-The simulation code, raw per-seed data, and analysis
-scripts that support the findings of this study are
-publicly available at
-\url{https://github.com/evanwmart/competitive-ca}.
+The simulation code (C source for the random-sequential
+update kernel and adaptive-graph data structure), parameter
+files for every reported run, raw per-seed CSVs, and the
+Python analysis and plotting scripts used to produce every
+figure and table are publicly available at
+\url{https://github.com/evanwmart/competitive-ca}
+(tag corresponding to this submission: see repository
+README for the exact commit and a step-by-step recipe
+that reproduces the figures and tables from the raw data).
 
 \section*{Acknowledgments}
 The author declares no external funding.
