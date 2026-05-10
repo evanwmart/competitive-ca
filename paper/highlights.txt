@@ -1,5 +1,5 @@
 Adaptive rewiring sharpens a multi-species competitive transition on a 2D lattice.
-Binder cumulant shallows L=128->384; consistent with a continuous transition.
+Binder dip recovers from L=128 to L=256 toward the single-peak value 2/3.
 Bimodal window narrows from broad at L=128 to mu in [0.347,0.349] at L=384.
 Degree-cap sweep kmax in {4,5,6,8} implicates headroom as a contributing factor.
 kmax=4 vs >=5 contrast partly reflects reinforcement suppression (deg<rmin).
